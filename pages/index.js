@@ -8,8 +8,8 @@ import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
-import LoginForm from "../components/LoginForm";
-import SignUpForm from "../components/SignupForm";
+import LoginForm from "../components/forms/LoginForm";
+import SignUpForm from "../components/forms/SignupForm";
 
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props;
@@ -59,7 +59,7 @@ const Home = () => {
 
   React.useLayoutEffect(() => {
     if (res?.data) {
-      Router.replace("/apartments");
+      Router.replace("/restaurants");
     }
   }, [res]);
 
