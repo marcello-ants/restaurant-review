@@ -89,18 +89,6 @@ const Restaurants = ({ serverData }) => {
   const [roomsFilter, setRoomsFilter] = React.useState(undefined);
 
   React.useEffect(() => {
-    if (restaurants) {
-      const arr = restaurants.map((item) => {
-        const latlng = item.coordinates.split(",");
-        const lat = parseFloat(latlng[0]);
-        const lng = parseFloat(latlng[1]);
-        return { name: item.name, location: { lat: lat, lng: lng } };
-      });
-      setCoordinates(arr);
-    }
-  }, [restaurants]);
-
-  React.useEffect(() => {
     let filteredData = serverData;
     if (priceFilter)
       filteredData = filteredData.filter((item) => item.price <= priceFilter);
@@ -163,14 +151,8 @@ const Restaurants = ({ serverData }) => {
     setRestaurantForm({
       id: item._id,
       name: item.name,
-      description: item.description,
-      size: item.size,
-      price: item.price,
-      rooms: item.rooms,
-      coordinates: item.coordinates,
+      owner: item.owner,
       image_url: item.image_url,
-      associated_realtor: item.associated_realtor,
-      is_rented: item.is_rented,
     });
     setForNewRestaurant(false);
     setIsModalOpen(true);
@@ -280,7 +262,7 @@ const Restaurants = ({ serverData }) => {
           <Table>
             <TableBody>
               <TableCell>
-                <Grid container spacing={3}>
+                {/* <Grid container spacing={3}>
                   {restaurants &&
                     restaurants
                       .slice(
@@ -322,7 +304,7 @@ const Restaurants = ({ serverData }) => {
                           </Grid>
                         );
                       })}
-                </Grid>
+                </Grid> */}
               </TableCell>
             </TableBody>
           </Table>
