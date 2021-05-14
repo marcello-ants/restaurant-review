@@ -5,22 +5,23 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import TextField from "@material-ui/core/TextField";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
+import PersonIcon from "@material-ui/icons/Person";
 import MenuItem from "@material-ui/core/MenuItem";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
-    padding: "0 25px 15px 25px",
-    overflowY: "scroll",
     flexDirection: "column",
     alignItems: "center",
+  },
+  formControl: {
+    margin: theme.spacing(1),
   },
   avatar: {
     margin: theme.spacing(1),
@@ -35,28 +36,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const RestaurantForm = ({
-  restaurantForm,
-  owners,
-  forNewRestaurant = true,
-  onCompleted,
-  isAdmin,
-}) => {
+const UserForm = ({ userForm, forNewUser, onCompleted }) => {
   const classes = useStyles();
+  const contentType = "application/json";
   const [errors, setErrors] = React.useState({});
   const [errorMessage, setErrorMessage] = React.useState("");
-  const [form, setForm] = React.useState({
-    ...restaurantForm,
-    ...(forNewRestaurant && { created_at: new Date().toString() }),
-  });
+  const [form, setForm] = React.useState({ ...userForm });
 
-  // APARTMENT PUT
+  // USER PUT
   const putData = async (form) => {
     try {
-      const res = await fetch(`/api/restaurants/${restaurantForm.id}`, {
+      const res = await fetch(`/api/users/${userForm.id}`, {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
+          Accept: contentType,
+          "Content-Type": contentType,
         },
         body: JSON.stringify(form),
       });
@@ -64,33 +58,34 @@ const RestaurantForm = ({
       if (!res.ok) {
         throw new Error(res.status);
       }
-
       const { data } = await res.json();
-      mutate(`/api/restaurants/${restaurantForm.id}`, data, false);
+      mutate(`/api/users/${userForm.id}`, data, false);
       onCompleted();
       return res;
     } catch (error) {
-      setErrorMessage("Failed to update restaurant");
+      setErrorMessage("Failed to update user");
     }
   };
 
-  // APARTMENT POST
+  // USER POST
   const postData = async (form) => {
     try {
-      const res = await fetch("/api/restaurants", {
+      const res = await fetch("/api/users", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          Accept: contentType,
+          "Content-Type": contentType,
         },
         body: JSON.stringify(form),
       });
+
       if (!res.ok) {
         throw new Error(res.status);
       }
       onCompleted();
       return res;
     } catch (error) {
-      setErrorMessage("Failed to add restaurant");
+      setErrorMessage("Failed to create user");
     }
   };
 
@@ -98,20 +93,18 @@ const RestaurantForm = ({
     setErrors({});
     let err = {};
     if (!form.name) err.name = "name is required";
-    if (!form.owner) err.owner = "owner is required";
-    if (!form.image_url) err.image_url = "image is required";
+    if (!form.password && forNewUser) err.password = "password is required";
+    if (!form.role) err.role = "role is required";
+
     return err;
   };
 
   const handleChange = (e) => {
-    const target = e.target;
-    const type = e.target.type;
-    const name = target.name;
-    const value = target.value;
-
+    const value = e.target.value;
+    const name = e.target.name;
     setForm({
       ...form,
-      [name]: type === "number" ? parseInt(value) : value,
+      [name]: value,
     });
   };
 
@@ -119,7 +112,7 @@ const RestaurantForm = ({
     e.preventDefault();
     const errs = formValidate();
     if (Object.keys(errs).length === 0) {
-      forNewRestaurant ? postData(form) : putData(form);
+      forNewUser ? postData(form) : putData(form);
     } else {
       setErrors(errs);
     }
@@ -128,29 +121,26 @@ const RestaurantForm = ({
   return (
     <>
       <CssBaseline />
-      <div
-        className={classes.paper}
-        style={{ height: "-webkit-fill-available" }}
-      >
+      <div className={classes.paper} style={{ padding: "0 40px" }}>
         <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
+          <PersonIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          {forNewRestaurant ? "Create Restaurant" : "Edit Restaurant"}
+          {forNewUser ? "Create User" : "Edit User"}
         </Typography>
         <form
-          id="restaurant-form"
+          id="user-form"
           className={classes.form}
           noValidate
           onSubmit={(e) => handleSubmit(e)}
         >
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid item xs={12}>
               <TextField
                 error={errors && errors.name}
                 id="name"
                 name="name"
-                label="name"
+                label="user name"
                 value={form.name}
                 autoComplete="name"
                 variant="outlined"
@@ -160,53 +150,40 @@ const RestaurantForm = ({
                 onChange={(e) => handleChange(e)}
               />
             </Grid>
-            {isAdmin && (
-              <Grid item xs={6}>
-                {/* ADMIN */}
-                {/* <TextField
-                  error={errors && errors.owner}
-                  id="owner"
-                  name="owner"
-                  label="owner"
-                  value={form.owner}
-                  autoComplete="owner"
+            {forNewUser && (
+              <Grid item xs={12}>
+                <TextField
+                  error={errors && errors.password}
+                  id="password"
+                  name="password"
+                  label="password"
+                  value={form.password}
+                  autoComplete="current-password"
                   variant="outlined"
+                  type="password"
                   fullWidth
                   required
                   onChange={(e) => handleChange(e)}
-                /> */}
-                <FormControl variant="outlined" fullWidth>
-                  <InputLabel id="owner">owner</InputLabel>
-                  <Select
-                    error={errors && errors.owner}
-                    labelId="owner"
-                    id="owner"
-                    name="owner"
-                    label="owner"
-                    value={form.owner}
-                    onChange={(e) => handleChange(e)}
-                  >
-                    {owners.map((item) => (
-                      <MenuItem value="owner">{item.name}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                />
               </Grid>
             )}
             <Grid item xs={12}>
-              <TextField
-                error={errors && errors.image_url}
-                id="image_url"
-                name="image_url"
-                label="image url"
-                value={form.image_url}
-                autoComplete="image_url"
-                type="url"
-                variant="outlined"
-                fullWidth
-                required
-                onChange={(e) => handleChange(e)}
-              />
+              <FormControl variant="outlined" fullWidth>
+                <InputLabel id="role">role</InputLabel>
+                <Select
+                  error={errors && errors.role}
+                  labelId="role"
+                  id="role"
+                  name="role"
+                  label="role"
+                  value={form.role}
+                  onChange={(e) => handleChange(e)}
+                >
+                  <MenuItem value="client">client</MenuItem>
+                  <MenuItem value="owner">owner</MenuItem>
+                  <MenuItem value="admin">admin</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
           </Grid>
           <Button
@@ -216,7 +193,7 @@ const RestaurantForm = ({
             fullWidth
             className={classes.submit}
           >
-            {forNewRestaurant ? "Create" : "Edit"}
+            {forNewUser ? "Create User" : "Edit User"}
           </Button>
           <Typography>{errorMessage}</Typography>
         </form>
@@ -225,4 +202,4 @@ const RestaurantForm = ({
   );
 };
 
-export default RestaurantForm;
+export default UserForm;

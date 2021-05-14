@@ -13,7 +13,7 @@ async function dbConnect() {
     User.estimatedDocumentCount((err, count) => {
       if (!err && count <= 100) {
         new User({
-          username: "admin",
+          name: "admin",
           password: bcrypt.hashSync("admin", 8),
           role: "admin",
         }).save((err) => {

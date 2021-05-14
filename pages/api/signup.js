@@ -12,12 +12,12 @@ export default async function signup(req, res) {
     case "POST":
       try {
         const user = await User.create({
-          username: req.body.username,
+          name: req.body.name,
           password: bcrypt.hashSync(req.body.password, 8),
           role: "client",
         });
         // User.findOne({
-        //   username: req.body.username,
+        //   name: req.body.name,
         // }).exec((err, user) => {
         //   if (err) {
         //     res.status(500).send({ message: err });
@@ -41,14 +41,14 @@ export default async function signup(req, res) {
         //     expiresIn: 86400, // 24 hours
         //   });
         //   const curentUser = {
-        //     username: req.body.username,
+        //     name: req.body.name,
         //     token: token,
         //   };
         //   res.setHeader("Set-Cookie", `session=${JSON.stringify(curentUser)};`);
         //   res.json({ message: "Logged in" });
         // });
         var token = jwt.sign(
-          { id: user.id, username: user.username, role: user.role },
+          { id: user.id, name: user.name, role: user.role },
           process.env.SECRET_KEY,
           {
             expiresIn: 86400, // 24 hours

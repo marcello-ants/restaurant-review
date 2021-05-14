@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     case "POST":
       try {
         const user = await User.create({
-          username: req.body.username,
+          name: req.body.name,
           password: bcrypt.hashSync(req.body.password, 8),
           role: req.body.role,
         });

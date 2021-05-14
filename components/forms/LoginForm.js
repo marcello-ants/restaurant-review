@@ -32,7 +32,7 @@ const LoginForm = ({ sendMutation }) => {
   const classes = useStyles();
   const [errors, setErrors] = React.useState({});
   const [errorMessage, setErrorMessage] = React.useState("");
-  const [form, setForm] = React.useState({ username: "", password: "" });
+  const [form, setForm] = React.useState({ name: "", password: "" });
 
   const login = async (form) => {
     try {
@@ -57,7 +57,7 @@ const LoginForm = ({ sendMutation }) => {
   const formValidate = () => {
     setErrors({});
     let err = {};
-    if (!form.username) err.username = "name is required";
+    if (!form.name) err.name = "name is required";
     if (!form.password) err.password = "password is required";
     return err;
   };
@@ -101,9 +101,9 @@ const LoginForm = ({ sendMutation }) => {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                error={errors && errors.username}
-                id="username"
-                name="username"
+                error={errors && errors.name}
+                id="name"
+                name="name"
                 label="user name"
                 autoComplete="name"
                 variant="outlined"

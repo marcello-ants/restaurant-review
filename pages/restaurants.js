@@ -6,6 +6,7 @@ import { withStyles, makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Restaurant from "../models/Restaurant";
+import User from "../models/User";
 import dbConnect from "../utils/dbConnect";
 import Modal from "../components/Modal";
 import PublicIcon from "@material-ui/icons/Public";
@@ -83,7 +84,8 @@ const Restaurants = ({ serverData }) => {
   const [forNewRestaurant, setForNewRestaurant] = React.useState(false);
   const [restaurantForm, setRestaurantForm] = React.useState({});
   const [coordinates, setCoordinates] = React.useState([]);
-  const [restaurants, setRestaurants] = React.useState(serverData);
+  const [restaurants, setRestaurants] = React.useState(serverData.restaurants);
+  const [owners, setOwners] = React.useState(serverData.owners);
   const [priceFilter, setPriceFilter] = React.useState(undefined);
   const [sizeFilter, setSizeFilter] = React.useState(undefined);
   const [roomsFilter, setRoomsFilter] = React.useState(undefined);
@@ -100,7 +102,7 @@ const Restaurants = ({ serverData }) => {
   }, [priceFilter, sizeFilter, roomsFilter]);
 
   React.useEffect(() => {
-    setRestaurants(serverData);
+    setRestaurants(serverData.restaurants);
   }, [serverData]);
 
   React.useLayoutEffect(() => {
@@ -121,6 +123,8 @@ const Restaurants = ({ serverData }) => {
   const refreshData = () => {
     router.replace(router.asPath);
   };
+
+  console.log(restaurants);
 
   const deleteRestaurant = async (id) => {
     try {
@@ -181,54 +185,6 @@ const Restaurants = ({ serverData }) => {
               marginBottom: 40,
             }}
           >
-            <Grid container spacing={10} style={{ padding: "0 30px" }}>
-              <Grid item xs={12} md={4}>
-                <Typography id="price-slider">
-                  max price: {priceFilter && priceFilter}
-                </Typography>
-                <CustomSlider
-                  aria-labelledby="price-slider"
-                  step={100}
-                  min={100}
-                  max={1500}
-                  defaultValue={1500}
-                  marks
-                  onChange={(_, value) => setPriceFilter(value)}
-                  valueLabelDisplay="auto"
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Typography id="size-slider">
-                  max size: {sizeFilter && sizeFilter}
-                </Typography>
-                <CustomSlider
-                  aria-labelledby="size-slider"
-                  marks
-                  step={10}
-                  min={50}
-                  max={200}
-                  defaultValue={200}
-                  onChange={(_, value) => setSizeFilter(value)}
-                  valueLabelDisplay="auto"
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Typography id="rooms-slider">
-                  max rooms: {roomsFilter && roomsFilter}
-                </Typography>
-                <CustomSlider
-                  aria-labelledby="rooms-slider"
-                  marks
-                  marks
-                  step={1}
-                  min={1}
-                  max={7}
-                  defaultValue={7}
-                  onChange={(_, value) => setRoomsFilter(value)}
-                  valueLabelDisplay="auto"
-                />
-              </Grid>
-            </Grid>
             <div
               style={{
                 display: "flex",
@@ -237,6 +193,19 @@ const Restaurants = ({ serverData }) => {
                 marginRight: 10,
               }}
             >
+              <div>
+                restaurants:
+                {restaurants.map((item) => {
+                  return <p>{item.name}</p>;
+                })}
+              </div>
+              <div>
+                owners:
+                {owners.map((item) => {
+                  console.log(item);
+                  return <p>{item.name}</p>;
+                })}
+              </div>
               {(isAdmin || isRealtor) && (
                 <Fab
                   color="primary"
@@ -246,18 +215,10 @@ const Restaurants = ({ serverData }) => {
                   <AddIcon />
                 </Fab>
               )}
-
-              <Fab
-                color="primary"
-                aria-label="open-map"
-                onClick={() => setIsMapModalOpen(true)}
-                style={{ marginLeft: 20 }}
-              >
-                <PublicIcon />
-              </Fab>
             </div>
           </div>
         )}
+
         <TableContainer>
           <Table>
             <TableBody>
@@ -333,6 +294,7 @@ const Restaurants = ({ serverData }) => {
           <RestaurantForm
             formId="add-restaurant-form"
             restaurantForm={restaurantForm}
+            owners={owners}
             forNewRestaurant={forNewRestaurant}
             isAdmin={isAdmin}
             onCompleted={() => {
@@ -350,13 +312,23 @@ export async function getServerSideProps() {
   await dbConnect();
 
   const result = await Restaurant.find({});
+  const userResult = await User.find({ role: "owner" });
+
   const restaurants = result.map((doc) => {
     const restaurants = doc.toObject();
     restaurants._id = restaurants._id.toString();
     return restaurants;
   });
 
-  return { props: { serverData: restaurants } };
+  const owners = userResult.map((doc) => {
+    const owners = doc.toObject();
+    owners._id = owners._id.toString();
+    return owners;
+  });
+
+  return {
+    props: { serverData: { restaurants: restaurants, owners: owners } },
+  };
 }
 
 export default Restaurants;

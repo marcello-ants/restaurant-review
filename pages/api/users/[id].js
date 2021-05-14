@@ -29,13 +29,13 @@ export default async function handler(req, res) {
       try {
         const oldUser = await User.findById(id);
         const newUser = {
-          username: req.body.username,
+          name: req.body.name,
           password: oldUser.password,
           role: req.body.role,
         };
 
         // const newUser = {
-        //   username: req.body.username,
+        //   name: req.body.name,
         //   password: bcrypt.hashSync(req.body.password, 8),
         //   role: req.body.role,
         // };

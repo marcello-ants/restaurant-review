@@ -48,7 +48,7 @@ export default function ButtonAppBar({}) {
         <Toolbar>
           {user && (
             <Typography variant="h6" className={classes.title}>
-              {user.username}
+              {user.name}
             </Typography>
           )}
           {isAdmin && (

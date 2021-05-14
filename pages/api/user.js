@@ -21,7 +21,7 @@ export default async function login(req, res) {
 
         res.status(200).json({ success: true, data: user });
         // User.findOne({
-        //   username: req.body.username,
+        //   name: req.body.name,
         // }).exec((err, user) => {
         //   if (err) {
         //     res.status(500).send({ message: err });

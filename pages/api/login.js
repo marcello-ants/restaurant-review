@@ -12,7 +12,7 @@ export default async function login(req, res) {
     case "POST":
       try {
         User.findOne({
-          username: req.body.username,
+          name: req.body.name,
         }).exec((err, user) => {
           if (err) {
             res.status(500).send({ message: err });
@@ -38,7 +38,7 @@ export default async function login(req, res) {
 
           // returns when token is valid:
           var token = jwt.sign(
-            { id: user.id, username: user.username, role: user.role },
+            { id: user.id, name: user.name, role: user.role },
             process.env.SECRET_KEY,
             {
               expiresIn: 86400, // 24 hours
