@@ -6,10 +6,9 @@ const Restaurant = new mongoose.Schema({
     required: [true, "Please provide a name for this restaurant."],
     maxlength: [60, "Name can't be more than 60 characters"],
   },
-  owner: {
+  owner_id: {
     type: String,
-    required: [true, "Please provide an owner for this restaurant."],
-    maxlength: [60, "Description can't be more than 60 characters"],
+    required: [true, "Please provide an owner ID for this restaurant."],
   },
   rating: {
     type: Number,

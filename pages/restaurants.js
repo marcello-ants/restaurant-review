@@ -144,7 +144,7 @@ const Restaurants = ({ serverData }) => {
   const createRestaurant = () => {
     setRestaurantForm({
       name: "",
-      owner: "",
+      owner_id: "",
       image_url: "",
     });
     setForNewRestaurant(true);
@@ -155,7 +155,7 @@ const Restaurants = ({ serverData }) => {
     setRestaurantForm({
       id: item._id,
       name: item.name,
-      owner: item.owner,
+      owner_id: item.owner_id,
       image_url: item.image_url,
     });
     setForNewRestaurant(false);
@@ -193,19 +193,6 @@ const Restaurants = ({ serverData }) => {
                 marginRight: 10,
               }}
             >
-              <div>
-                restaurants:
-                {restaurants.map((item) => {
-                  return <p>{item.name}</p>;
-                })}
-              </div>
-              <div>
-                owners:
-                {owners.map((item) => {
-                  console.log(item);
-                  return <p>{item.name}</p>;
-                })}
-              </div>
               {(isAdmin || isRealtor) && (
                 <Fab
                   color="primary"
@@ -223,6 +210,24 @@ const Restaurants = ({ serverData }) => {
           <Table>
             <TableBody>
               <TableCell>
+                <div>
+                  {restaurants.map((item) => {
+                    return (
+                      <div>
+                        <span>
+                          name: {item.name} ({item.owner_id})
+                        </span>
+                        <button onClick={() => deleteRestaurant(item._id)}>
+                          X
+                        </button>
+                        <br />
+                        <span></span>
+                        <br />
+                        <br />
+                      </div>
+                    );
+                  })}
+                </div>
                 {/* <Grid container spacing={3}>
                   {restaurants &&
                     restaurants

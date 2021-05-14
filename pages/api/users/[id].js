@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import dbConnect from "../../../utils/dbConnect";
+import Restaurant from "../../../models/Restaurant";
 import User from "../../../models/User";
 
 export default async function handler(req, res) {
@@ -55,8 +56,12 @@ export default async function handler(req, res) {
     /* delete an user by its ID */
     case "DELETE":
       try {
+        const deletedRestaurants = await Restaurant.deleteMany({
+          owner_id: id,
+        });
         const deletedUser = await User.deleteOne({ _id: id });
-        if (!deletedUser) {
+
+        if (!deletedUser || !deletedRestaurants) {
           return res.status(400).json({ success: false });
         }
         return res.status(200).json({ success: true, data: {} });

@@ -50,7 +50,7 @@ const RestaurantForm = ({
     ...(forNewRestaurant && { created_at: new Date().toString() }),
   });
 
-  // APARTMENT PUT
+  // RESTAURANT PUT
   const putData = async (form) => {
     try {
       const res = await fetch(`/api/restaurants/${restaurantForm.id}`, {
@@ -74,7 +74,7 @@ const RestaurantForm = ({
     }
   };
 
-  // APARTMENT POST
+  // RESTAURANT POST
   const postData = async (form) => {
     try {
       const res = await fetch("/api/restaurants", {
@@ -98,7 +98,7 @@ const RestaurantForm = ({
     setErrors({});
     let err = {};
     if (!form.name) err.name = "name is required";
-    if (!form.owner) err.owner = "owner is required";
+    if (!form.owner_id) err.owner_id = "owner ID is required";
     if (!form.image_url) err.image_url = "image is required";
     return err;
   };
@@ -176,18 +176,18 @@ const RestaurantForm = ({
                   onChange={(e) => handleChange(e)}
                 /> */}
                 <FormControl variant="outlined" fullWidth>
-                  <InputLabel id="owner">owner</InputLabel>
+                  <InputLabel id="owner_id">owner</InputLabel>
                   <Select
-                    error={errors && errors.owner}
-                    labelId="owner"
-                    id="owner"
-                    name="owner"
+                    error={errors && errors.owner_id}
+                    labelId="owner_id"
+                    id="owner_id"
+                    name="owner_id"
                     label="owner"
-                    value={form.owner}
+                    value={form.owner_id}
                     onChange={(e) => handleChange(e)}
                   >
                     {owners.map((item) => (
-                      <MenuItem value="owner">{item.name}</MenuItem>
+                      <MenuItem value={item._id}>{item.name}</MenuItem>
                     ))}
                   </Select>
                 </FormControl>
