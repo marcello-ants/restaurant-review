@@ -14,6 +14,7 @@ import Fab from "@material-ui/core/Fab";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Slider from "@material-ui/core/Slider";
 import TopBar from "../components/TopBar";
+import RestaurantCard from "../components/RestaurantCard";
 import RestaurantForm from "../components/forms/RestaurantForm";
 import AddIcon from "@material-ui/icons/Add";
 import Table from "@material-ui/core/Table";
@@ -205,12 +206,11 @@ const Restaurants = ({ serverData }) => {
             </div>
           </div>
         )}
-
         <TableContainer>
           <Table>
             <TableBody>
               <TableCell>
-                <div>
+                {/* <div>
                   {restaurants.map((item) => {
                     return (
                       <div>
@@ -227,8 +227,8 @@ const Restaurants = ({ serverData }) => {
                       </div>
                     );
                   })}
-                </div>
-                {/* <Grid container spacing={3}>
+                </div> */}
+                <Grid container spacing={3}>
                   {restaurants &&
                     restaurants
                       .slice(
@@ -236,8 +236,8 @@ const Restaurants = ({ serverData }) => {
                         page * rowsPerPage + rowsPerPage
                       )
                       .map((item) => {
-                        if (item.is_rented && !isAdmin && !isRealtor)
-                          return null;
+                        // if (item.is_rented && !isAdmin && !isRealtor)
+                        //   return null;
                         return (
                           <Grid
                             key={item._id}
@@ -250,15 +250,10 @@ const Restaurants = ({ serverData }) => {
                             <Paper className={classes.paper}>
                               <RestaurantCard
                                 name={item.name}
-                                description={item.description}
-                                price={item.price}
-                                size={item.size}
-                                rooms={item.rooms}
                                 image={item.image_url}
-                                createdAt={item.created_at}
-                                isRented={item.is_rented}
+                                // createdAt={item.created_at}
                                 isAdmin={isAdmin}
-                                isRealtor={isRealtor}
+                                isOwner={isOwner}
                                 onEdit={() => {
                                   editRestaurant(item);
                                 }}
@@ -270,7 +265,7 @@ const Restaurants = ({ serverData }) => {
                           </Grid>
                         );
                       })}
-                </Grid> */}
+                </Grid>
               </TableCell>
             </TableBody>
           </Table>
