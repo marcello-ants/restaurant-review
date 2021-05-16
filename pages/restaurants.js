@@ -16,6 +16,7 @@ import Slider from "@material-ui/core/Slider";
 import TopBar from "../components/TopBar";
 import RestaurantCard from "../components/RestaurantCard";
 import RestaurantForm from "../components/forms/RestaurantForm";
+import ReviewForm from "../components/forms/ReviewForm";
 import AddIcon from "@material-ui/icons/Add";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -81,30 +82,20 @@ const Restaurants = ({ serverData }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(16);
-  const [isMapModalOpen, setIsMapModalOpen] = React.useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = React.useState(false);
   const [forNewRestaurant, setForNewRestaurant] = React.useState(false);
   const [restaurantForm, setRestaurantForm] = React.useState({});
+  const [reviewForm, setReviewForm] = React.useState({});
+  const [forNewReview, setForNewReview] = React.useState(false);
   const [coordinates, setCoordinates] = React.useState([]);
   const [restaurants, setRestaurants] = React.useState(serverData.restaurants);
   const [owners, setOwners] = React.useState(serverData.owners);
-  const [priceFilter, setPriceFilter] = React.useState(undefined);
-  const [sizeFilter, setSizeFilter] = React.useState(undefined);
-  const [roomsFilter, setRoomsFilter] = React.useState(undefined);
-
-  React.useEffect(() => {
-    let filteredData = serverData;
-    if (priceFilter)
-      filteredData = filteredData.filter((item) => item.price <= priceFilter);
-    if (sizeFilter)
-      filteredData = filteredData.filter((item) => item.size <= sizeFilter);
-    if (roomsFilter)
-      filteredData = filteredData.filter((item) => item.rooms <= roomsFilter);
-    setRestaurants(filteredData);
-  }, [priceFilter, sizeFilter, roomsFilter]);
 
   React.useEffect(() => {
     setRestaurants(serverData.restaurants);
   }, [serverData]);
+
+  console.log(restaurants);
 
   React.useLayoutEffect(() => {
     if (res && res.data) {
@@ -147,6 +138,7 @@ const Restaurants = ({ serverData }) => {
       name: "",
       owner_id: "",
       image_url: "",
+      reviews: [],
     });
     setForNewRestaurant(true);
     setIsModalOpen(true);
@@ -161,6 +153,16 @@ const Restaurants = ({ serverData }) => {
     });
     setForNewRestaurant(false);
     setIsModalOpen(true);
+  };
+
+  const reviewRestaurant = (item) => {
+    setReviewForm({
+      id: item._id,
+      comment: "",
+      rating: 0,
+    });
+    setForNewReview(true);
+    setIsReviewModalOpen(true);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -254,6 +256,9 @@ const Restaurants = ({ serverData }) => {
                                 // createdAt={item.created_at}
                                 isAdmin={isAdmin}
                                 isOwner={isOwner}
+                                onReview={() => {
+                                  reviewRestaurant(item);
+                                }}
                                 onEdit={() => {
                                   editRestaurant(item);
                                 }}
@@ -282,11 +287,21 @@ const Restaurants = ({ serverData }) => {
       </div>
       {/* <div>{deleteMessage}</div> */}
       <Modal
-        isOpen={isMapModalOpen}
-        onModalClose={() => setIsMapModalOpen(false)}
+        isOpen={isReviewModalOpen}
+        onModalClose={() => setIsReviewModalOpen(false)}
       >
         <div className={classes.modalBody}>
-          <Map items={coordinates} />
+          <ReviewForm
+            formId="add-review-form"
+            reviewForm={reviewForm}
+            // owners={owners}
+            forNewReview={forNewReview}
+            isAdmin={isAdmin}
+            onCompleted={() => {
+              refreshData();
+              setIsReviewModalOpen(false);
+            }}
+          />
         </div>
       </Modal>
       <Modal isOpen={isModalOpen} onModalClose={() => setIsModalOpen(false)}>
@@ -314,11 +329,14 @@ export async function getServerSideProps() {
   const result = await Restaurant.find({});
   const userResult = await User.find({ role: "owner" });
 
-  const restaurants = result.map((doc) => {
-    const restaurants = doc.toObject();
-    restaurants._id = restaurants._id.toString();
-    return restaurants;
-  });
+  const restaurants = JSON.parse(JSON.stringify(result));
+
+  // const restaurants = result.map((doc) => {
+  //   const restaurants = doc.toObject();
+  //   restaurants._id = restaurants._id.toString();
+
+  //   return restaurants;
+  // });
 
   const owners = userResult.map((doc) => {
     const owners = doc.toObject();

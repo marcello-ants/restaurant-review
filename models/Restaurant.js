@@ -1,5 +1,14 @@
 import mongoose from "mongoose";
 
+const Review = new mongoose.Schema({
+  comment: {
+    type: String,
+  },
+  rating: {
+    type: Number,
+  },
+});
+
 const Restaurant = new mongoose.Schema({
   name: {
     type: String,
@@ -16,6 +25,7 @@ const Restaurant = new mongoose.Schema({
   image_url: {
     type: String,
   },
+  reviews: [Review],
   //   created_at: {
   //     type: Date,
   //   },

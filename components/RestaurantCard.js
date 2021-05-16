@@ -42,6 +42,7 @@ const RestaurantCard = ({
   isAdmin,
   isOwner,
   onEdit,
+  onReview,
   onDelete,
 }) => {
   const classes = useStyles();
@@ -141,14 +142,15 @@ const RestaurantCard = ({
           >
             Delete
           </Button>
-          <Typography
-            variant="body2"
-            color="secondary"
-            component="p"
-            style={{ marginLeft: 20 }}
+          <Button
+            className={classes.button}
+            startIcon={<DeleteIcon />}
+            onClick={() => {
+              onReview();
+            }}
           >
-            RENTED
-          </Typography>
+            Review
+          </Button>
         </CardActions>
       )}
     </Card>
