@@ -5,6 +5,7 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
+
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
@@ -41,6 +42,7 @@ const ReviewForm = ({
   forNewReview = true,
   onCompleted,
   isAdmin,
+  isCostumer,
 }) => {
   const classes = useStyles();
   const [errors, setErrors] = React.useState({});
@@ -76,10 +78,6 @@ const ReviewForm = ({
 
   // REVIEW POST
   const postData = async (form) => {
-    // console.log("form", form);
-    // console.log("review form", reviewForm.id);
-    // return false;
-
     try {
       // const res = await fetch("/api/restaurants/", {
       const res = await fetch(`/api/restaurants/${form.id}/reviews`, {
@@ -151,21 +149,6 @@ const ReviewForm = ({
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <TextField
-                error={errors && errors.comment}
-                id="comment"
-                name="comment"
-                label="comment"
-                value={form.comment}
-                autoComplete="comment"
-                variant="outlined"
-                fullWidth
-                required
-                autoFocus
-                onChange={(e) => handleChange(e)}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
                 error={errors && errors.rating}
                 id="rating"
                 name="rating"
@@ -176,6 +159,21 @@ const ReviewForm = ({
                 variant="outlined"
                 fullWidth
                 required
+                onChange={(e) => handleChange(e)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                error={errors && errors.comment}
+                id="comment"
+                name="comment"
+                label="comment"
+                value={form.comment}
+                autoComplete="comment"
+                variant="outlined"
+                fullWidth
+                required
+                autoFocus
                 onChange={(e) => handleChange(e)}
               />
             </Grid>

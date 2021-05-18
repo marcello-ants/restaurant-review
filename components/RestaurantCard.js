@@ -39,8 +39,10 @@ const RestaurantCard = ({
   name,
   image,
   //   createdAt,
+  isCustomer,
   isAdmin,
   isOwner,
+  reviews,
   onEdit,
   onReview,
   onDelete,
@@ -87,23 +89,7 @@ const RestaurantCard = ({
             component="p"
             style={{ color: "darkGreen", fontSize: 18 }}
           >
-            $ price
-          </Typography>
-          <Typography
-            variant="body2"
-            color="textSecondary"
-            component="p"
-            style={{ fontSize: 16 }}
-          >
-            Rooms: rooms
-          </Typography>
-          <Typography
-            variant="body2"
-            color="textSecondary"
-            component="p"
-            style={{ fontSize: 16 }}
-          >
-            Size: size
+            rate: 5
           </Typography>
           <IconButton
             className={clsx(classes.expand, {
@@ -120,28 +106,16 @@ const RestaurantCard = ({
       </CardContent>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent style={{ padding: 16, paddingTop: 0 }}>
-          <Typography align="left">description</Typography>
+          {reviews.map((item) => (
+            <div item={item._id}>
+              <Typography>{item.rating}</Typography>
+              <Typography>{item.comment}</Typography>
+            </div>
+          ))}
         </CardContent>
       </Collapse>
       {(isAdmin || isOwner) && (
         <CardActions>
-          <Button
-            startIcon={<EditIcon />}
-            onClick={() => {
-              onEdit();
-            }}
-          >
-            Edit
-          </Button>
-          <Button
-            className={classes.button}
-            startIcon={<DeleteIcon />}
-            onClick={() => {
-              onDelete();
-            }}
-          >
-            Delete
-          </Button>
           <Button
             className={classes.button}
             startIcon={<DeleteIcon />}
@@ -150,6 +124,23 @@ const RestaurantCard = ({
             }}
           >
             Review
+          </Button>
+          {/* <Button
+            startIcon={<EditIcon />}
+            onClick={() => {
+              onEdit();
+            }}
+          >
+            Edit
+          </Button> */}
+          <Button
+            className={classes.button}
+            startIcon={<DeleteIcon />}
+            onClick={() => {
+              onDelete();
+            }}
+          >
+            Delete
           </Button>
         </CardActions>
       )}

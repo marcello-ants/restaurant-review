@@ -46,38 +46,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CustomSlider = withStyles({
-  root: {
-    color: "#3880ff",
-    height: 2,
-    padding: "15px 0",
-  },
-  track: {
-    height: 2,
-  },
-  rail: {
-    height: 2,
-    opacity: 0.5,
-    backgroundColor: "#bfbfbf",
-  },
-  mark: {
-    backgroundColor: "#bfbfbf",
-    height: 8,
-    width: 1,
-    marginTop: -3,
-  },
-  markActive: {
-    opacity: 1,
-  },
-})(Slider);
-
 const Restaurants = ({ serverData }) => {
   const router = useRouter();
   const classes = useStyles();
   const { data: res, mutate } = useMe();
+  const { owners } = serverData;
+
   const [user, setUser] = React.useState();
   const [isAdmin, setIsAdmin] = React.useState(false);
   const [isOwner, setIsOwner] = React.useState(false);
+  const [isCustomer, setIsCustomer] = React.useState(false);
   const [deleteMessage, setDeleteMessage] = React.useState("");
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [page, setPage] = React.useState(0);
@@ -87,21 +65,18 @@ const Restaurants = ({ serverData }) => {
   const [restaurantForm, setRestaurantForm] = React.useState({});
   const [reviewForm, setReviewForm] = React.useState({});
   const [forNewReview, setForNewReview] = React.useState(false);
-  const [coordinates, setCoordinates] = React.useState([]);
   const [restaurants, setRestaurants] = React.useState(serverData.restaurants);
-  const [owners, setOwners] = React.useState(serverData.owners);
 
   React.useEffect(() => {
     setRestaurants(serverData.restaurants);
   }, [serverData]);
-
-  console.log(restaurants);
 
   React.useLayoutEffect(() => {
     if (res && res.data) {
       setUser(res.data);
       if (res.data.role === "admin") setIsAdmin(true);
       if (res.data.role === "owner") setIsOwner(true);
+      if (res.data.role === "customer") setIsCustomer(true);
     }
     if (!res || res.error) Router.replace("/");
   }, [res]);
@@ -115,8 +90,6 @@ const Restaurants = ({ serverData }) => {
   const refreshData = () => {
     router.replace(router.asPath);
   };
-
-  console.log(restaurants);
 
   const deleteRestaurant = async (id) => {
     try {
@@ -245,9 +218,9 @@ const Restaurants = ({ serverData }) => {
                             key={item._id}
                             item
                             xs={12}
-                            sm={6}
-                            md={4}
-                            lg={3}
+                            // sm={6}
+                            md={6}
+                            // lg={3}
                           >
                             <Paper className={classes.paper}>
                               <RestaurantCard
@@ -256,6 +229,8 @@ const Restaurants = ({ serverData }) => {
                                 // createdAt={item.created_at}
                                 isAdmin={isAdmin}
                                 isOwner={isOwner}
+                                isCustomer={isCustomer}
+                                reviews={item.reviews}
                                 onReview={() => {
                                   reviewRestaurant(item);
                                 }}
@@ -297,6 +272,7 @@ const Restaurants = ({ serverData }) => {
             // owners={owners}
             forNewReview={forNewReview}
             isAdmin={isAdmin}
+            isCustomer={isCustomer}
             onCompleted={() => {
               refreshData();
               setIsReviewModalOpen(false);

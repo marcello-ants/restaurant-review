@@ -179,7 +179,7 @@ const UserForm = ({ userForm, forNewUser, onCompleted }) => {
                   value={form.role}
                   onChange={(e) => handleChange(e)}
                 >
-                  <MenuItem value="client">client</MenuItem>
+                  <MenuItem value="customer">customer</MenuItem>
                   <MenuItem value="owner">owner</MenuItem>
                   <MenuItem value="admin">admin</MenuItem>
                 </Select>
