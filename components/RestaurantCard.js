@@ -9,6 +9,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Collapse from "@material-ui/core/Collapse";
 import EditIcon from "@material-ui/icons/Edit";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import ReactStars from "react-rating-stars-component";
 import DeleteIcon from "@material-ui/icons/Delete";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
@@ -77,7 +78,7 @@ const RestaurantCard = ({
             {createdAt}
           </Typography> */}
         </div>
-        <div
+        {/* <div
           style={{
             display: "flex",
             justifyContent: "space-between",
@@ -102,18 +103,30 @@ const RestaurantCard = ({
           >
             <ExpandMoreIcon />
           </IconButton>
-        </div>
+        </div> */}
       </CardContent>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent style={{ padding: 16, paddingTop: 0 }}>
-          {reviews.map((item) => (
-            <div item={item._id}>
-              <Typography>{item.rating}</Typography>
-              <Typography>{item.comment}</Typography>
-            </div>
-          ))}
-        </CardContent>
-      </Collapse>
+      <CardContent style={{ padding: 16, paddingTop: 0 }}>
+        {reviews.map((item) => (
+          <div item={item._id}>
+            <span>
+              <ReactStars
+                count={5}
+                value={item.rating}
+                // onChange={ratingChanged}
+                a11y={false}
+                edit={false}
+                size={15}
+                // color="#ffd700"
+                activeColor="#ffd700"
+              />
+              {/* <Typography component="span">rating: {item.rating} </Typography> */}
+              <Typography component="span">comment {item.comment}</Typography>
+            </span>
+          </div>
+        ))}
+      </CardContent>
+      {/* <Collapse in={expanded} timeout="auto" unmountOnExit>
+      </Collapse> */}
       {(isAdmin || isOwner) && (
         <CardActions>
           <Button

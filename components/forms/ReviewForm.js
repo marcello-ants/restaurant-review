@@ -5,14 +5,16 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
-
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import TextField from "@material-ui/core/TextField";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
+import ReactStars from "react-rating-stars-component";
 import Typography from "@material-ui/core/Typography";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
+import MomentUtils from "@date-io/moment";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -49,7 +51,7 @@ const ReviewForm = ({
   const [errorMessage, setErrorMessage] = React.useState("");
   const [form, setForm] = React.useState({
     ...reviewForm,
-    ...(forNewReview && { created_at: new Date().toString() }),
+    // ...(forNewReview && { created_at: new Date().toString() }),
   });
 
   // REVIEW PUT
@@ -78,14 +80,15 @@ const ReviewForm = ({
 
   // REVIEW POST
   const postData = async (form) => {
+    const postForm = { ...form, date: dateValue, rating: parseInt(rating) };
+
     try {
-      // const res = await fetch("/api/restaurants/", {
       const res = await fetch(`/api/restaurants/${form.id}/reviews`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(postForm),
       });
       if (!res.ok) {
         throw new Error(res.status);
@@ -101,8 +104,23 @@ const ReviewForm = ({
     setErrors({});
     let err = {};
     if (!form.comment) err.comment = "comment is required";
-    if (!form.rating) err.rating = "rating is required";
+    // if (!form.rating) err.rating = "rating is required";
     return err;
+  };
+
+  const [selectedDate, setDate] = React.useState(moment());
+  const [dateValue, setDateValue] = React.useState(
+    moment().format("DD-MM-YYYY")
+  );
+  const [rating, setRating] = React.useState(0);
+
+  const onDateChange = (date, value) => {
+    setDate(date);
+    setDateValue(value);
+  };
+
+  const dateFormatter = (str) => {
+    return str;
   };
 
   const handleChange = (e) => {
@@ -148,7 +166,14 @@ const ReviewForm = ({
         >
           <Grid container spacing={2}>
             <Grid item xs={6}>
-              <TextField
+              <ReactStars
+                count={5}
+                onChange={(newRating) => setRating(newRating)}
+                a11y={false}
+                size={24}
+                activeColor="#ffd700"
+              />
+              {/* <TextField
                 error={errors && errors.rating}
                 id="rating"
                 name="rating"
@@ -160,8 +185,27 @@ const ReviewForm = ({
                 fullWidth
                 required
                 onChange={(e) => handleChange(e)}
-              />
+              /> */}
             </Grid>
+            <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
+              <Grid item xs={6}>
+                <KeyboardDatePicker
+                  autoOk={true}
+                  showTodayButton={true}
+                  value={selectedDate}
+                  format="DD-MM-YYYY"
+                  fullWidth
+                  label="date visited"
+                  variant="inline"
+                  required
+                  inputVariant="outlined"
+                  inputValue={dateValue}
+                  onChange={onDateChange}
+                  // InputAdornmentProps={{ position: "end" }}
+                  rifmFormatter={dateFormatter}
+                />
+              </Grid>
+            </MuiPickersUtilsProvider>
             <Grid item xs={12}>
               <TextField
                 error={errors && errors.comment}
@@ -173,7 +217,6 @@ const ReviewForm = ({
                 variant="outlined"
                 fullWidth
                 required
-                autoFocus
                 onChange={(e) => handleChange(e)}
               />
             </Grid>

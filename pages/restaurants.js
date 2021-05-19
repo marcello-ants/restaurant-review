@@ -169,7 +169,7 @@ const Restaurants = ({ serverData }) => {
                 marginRight: 10,
               }}
             >
-              {(isAdmin || isRealtor) && (
+              {(isAdmin || isOwner) && (
                 <Fab
                   color="primary"
                   aria-label="create-restaurant"
@@ -218,8 +218,8 @@ const Restaurants = ({ serverData }) => {
                             key={item._id}
                             item
                             xs={12}
-                            // sm={6}
-                            md={6}
+                            sm={6}
+                            md={4}
                             // lg={3}
                           >
                             <Paper className={classes.paper}>
