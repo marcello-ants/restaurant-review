@@ -185,24 +185,6 @@ const Restaurants = ({ serverData }) => {
           <Table>
             <TableBody>
               <TableCell>
-                {/* <div>
-                  {restaurants.map((item) => {
-                    return (
-                      <div>
-                        <span>
-                          name: {item.name} ({item.owner_id})
-                        </span>
-                        <button onClick={() => deleteRestaurant(item._id)}>
-                          X
-                        </button>
-                        <br />
-                        <span></span>
-                        <br />
-                        <br />
-                      </div>
-                    );
-                  })}
-                </div> */}
                 <Grid container spacing={3}>
                   {restaurants &&
                     restaurants
@@ -224,13 +206,18 @@ const Restaurants = ({ serverData }) => {
                           >
                             <Paper className={classes.paper}>
                               <RestaurantCard
+                                data={item}
                                 name={item.name}
                                 image={item.image_url}
                                 // createdAt={item.created_at}
+                                userId={user?.id}
                                 isAdmin={isAdmin}
                                 isOwner={isOwner}
                                 isCustomer={isCustomer}
                                 reviews={item.reviews}
+                                onReview={() => {
+                                  reviewRestaurant(item);
+                                }}
                                 onReview={() => {
                                   reviewRestaurant(item);
                                 }}
@@ -269,7 +256,8 @@ const Restaurants = ({ serverData }) => {
           <ReviewForm
             formId="add-review-form"
             reviewForm={reviewForm}
-            // owners={owners}
+            // TODO: review global user info
+            userId={user?.id}
             forNewReview={forNewReview}
             isAdmin={isAdmin}
             isCustomer={isCustomer}

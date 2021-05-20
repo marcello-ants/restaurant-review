@@ -43,6 +43,7 @@ const ReviewForm = ({
   // owners,
   forNewReview = true,
   onCompleted,
+  userId,
   isAdmin,
   isCostumer,
 }) => {
@@ -80,7 +81,12 @@ const ReviewForm = ({
 
   // REVIEW POST
   const postData = async (form) => {
-    const postForm = { ...form, date: dateValue, rating: parseInt(rating) };
+    const postForm = {
+      ...form,
+      date: dateValue,
+      rating: parseInt(rating),
+      customer_id: userId,
+    };
 
     try {
       const res = await fetch(`/api/restaurants/${form.id}/reviews`, {

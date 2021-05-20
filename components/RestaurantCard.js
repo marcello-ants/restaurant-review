@@ -39,8 +39,10 @@ const useStyles = makeStyles((theme) => ({
 const RestaurantCard = ({
   name,
   image,
+  data,
   //   createdAt,
   isCustomer,
+  userId,
   isAdmin,
   isOwner,
   reviews,
@@ -51,9 +53,78 @@ const RestaurantCard = ({
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
 
+  const { _id: restaurantId } = data;
+  // console.log(restaurantId);
+
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+
+  // const onReviewReply = (item) => {
+  //   console.log(item);
+  //   // setExpanded(!expanded);
+  //   return false;
+  //   try {
+  //     const res = await fetch(`/api/restaurants/${reviewForm.id}`, {
+  //       method: "PUT",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(form),
+  //     });
+
+  //     if (!res.ok) {
+  //       throw new Error(res.status);
+  //     }
+
+  //     const { data } = await res.json();
+  //     mutate(`/api/restaurants/${reviewForm.id}`, data, false);
+  //     onCompleted();
+  //     return res;
+  //   } catch (error) {
+  //     setErrorMessage("Failed to update restaurant");
+  //   }
+  // };
+
+  const onReviewReply = async (review) => {
+    // console.log(review._id);
+    // return false;
+
+    try {
+      const res = await fetch(
+        `/api/restaurants/${restaurantId}/reviews/${review._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(review),
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(res.status);
+      }
+      // const res = await fetch(`/api/restaurants/${id}`, {
+      //   method: "DELETE",
+      // });
+
+      // if (!res.ok) {
+      //   throw new Error(res.status);
+      // }
+
+      refreshData();
+      return res;
+    } catch (error) {
+      console.log(error);
+      // setDeleteMessage("Failed to delete");
+    }
+  };
+
+  const isReviewed = reviews.reduce(
+    (accumulator, item) => accumulator || item.customer_id === userId,
+    false
+  );
 
   return (
     <Card className={classes.root}>
@@ -119,16 +190,23 @@ const RestaurantCard = ({
                 // color="#ffd700"
                 activeColor="#ffd700"
               />
-              {/* <Typography component="span">rating: {item.rating} </Typography> */}
               <Typography component="span">comment {item.comment}</Typography>
             </span>
+            {isOwner && !item.reply && (
+              <button onClick={() => onReviewReply(item)}>reply</button>
+            )}
+            {/* {isOwner && !item.reply && (
+              <button onClick={() => onReviewReply(item)}>reply</button>
+            )} */}
+            <br />
+            <br />
           </div>
         ))}
       </CardContent>
       {/* <Collapse in={expanded} timeout="auto" unmountOnExit>
       </Collapse> */}
-      {(isAdmin || isOwner) && (
-        <CardActions>
+      <CardActions>
+        {isCustomer && !isReviewed && (
           <Button
             className={classes.button}
             startIcon={<DeleteIcon />}
@@ -138,7 +216,8 @@ const RestaurantCard = ({
           >
             Review
           </Button>
-          {/* <Button
+        )}
+        {/* <Button
             startIcon={<EditIcon />}
             onClick={() => {
               onEdit();
@@ -146,6 +225,7 @@ const RestaurantCard = ({
           >
             Edit
           </Button> */}
+        {isAdmin && (
           <Button
             className={classes.button}
             startIcon={<DeleteIcon />}
@@ -155,8 +235,10 @@ const RestaurantCard = ({
           >
             Delete
           </Button>
-        </CardActions>
-      )}
+        )}
+      </CardActions>
+      {/* {(isAdmin || isOwner) && (
+      )} */}
     </Card>
   );
 };

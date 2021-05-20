@@ -1,10 +1,13 @@
 import mongoose from "mongoose";
 
 const Review = new mongoose.Schema({
-  // customer_id: {
-  //   type: String,
-  // },
+  customer_id: {
+    type: String,
+  },
   comment: {
+    type: String,
+  },
+  reply: {
     type: String,
   },
   rating: {
