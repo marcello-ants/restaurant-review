@@ -91,21 +91,6 @@ const Restaurants = ({ serverData }) => {
     router.replace(router.asPath);
   };
 
-  const deleteRestaurant = async (id) => {
-    try {
-      const res = await fetch(`/api/restaurants/${id}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) {
-        throw new Error(res.status);
-      }
-      refreshData();
-      return res;
-    } catch (error) {
-      setDeleteMessage("Failed to delete");
-    }
-  };
-
   const createRestaurant = () => {
     setRestaurantForm({
       name: "",
@@ -128,7 +113,22 @@ const Restaurants = ({ serverData }) => {
     setIsModalOpen(true);
   };
 
-  const reviewRestaurant = (item) => {
+  const deleteRestaurant = async (id) => {
+    try {
+      const res = await fetch(`/api/restaurants/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        throw new Error(res.status);
+      }
+      refreshData();
+      return res;
+    } catch (error) {
+      setDeleteMessage("Failed to delete");
+    }
+  };
+
+  const createReview = (item) => {
     setReviewForm({
       id: item._id,
       comment: "",
@@ -136,6 +136,31 @@ const Restaurants = ({ serverData }) => {
     });
     setForNewReview(true);
     setIsReviewModalOpen(true);
+  };
+
+  const editReview = async (restaurantId, review) => {
+    try {
+      const res = await fetch(`/api/restaurants/${restaurantId}/reviews`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(review),
+      });
+
+      if (!res.ok) {
+        throw new Error(res.status);
+      }
+
+      const { data } = await res.json();
+      // mutate(`/api/restaurants/${restaurantId}`, data, false);
+      refreshData();
+      // onCompleted();
+      return res;
+    } catch (error) {
+      console.log(error);
+      // setErrorMessage("Failed to update restaurant");
+    }
   };
 
   const handleChangePage = (event, newPage) => {
@@ -216,10 +241,10 @@ const Restaurants = ({ serverData }) => {
                                 isCustomer={isCustomer}
                                 reviews={item.reviews}
                                 onReview={() => {
-                                  reviewRestaurant(item);
+                                  createReview(item);
                                 }}
-                                onReview={() => {
-                                  reviewRestaurant(item);
+                                onEditReview={(id, item) => {
+                                  editReview(id, item);
                                 }}
                                 onEdit={() => {
                                   editRestaurant(item);
