@@ -46,7 +46,7 @@ const RestaurantCard = ({
   image,
   data,
   //   createdAt,
-  isCustomer,
+  isUser,
   userId,
   isAdmin,
   isOwner,
@@ -89,7 +89,7 @@ const RestaurantCard = ({
   };
 
   const isReviewed = reviews.reduce(
-    (accumulator, item) => accumulator || item.customer_id === userId,
+    (accumulator, item) => accumulator || item.user_id === userId,
     false
   );
 
@@ -164,7 +164,7 @@ const RestaurantCard = ({
         ))}
       </CardContent>
       <CardActions>
-        {isCustomer && !isReviewed && (
+        {isUser && !isReviewed && (
           <Button
             className={classes.button}
             startIcon={<DeleteIcon />}

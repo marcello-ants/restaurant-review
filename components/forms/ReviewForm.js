@@ -85,7 +85,7 @@ const ReviewForm = ({
       ...form,
       date: dateValue,
       rating: parseInt(rating),
-      customer_id: userId,
+      user_id: userId,
     };
 
     try {

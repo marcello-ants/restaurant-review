@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const Review = new mongoose.Schema({
-  customer_id: {
+  user_id: {
     type: String,
   },
   comment: {

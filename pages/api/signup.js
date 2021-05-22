@@ -14,7 +14,7 @@ export default async function signup(req, res) {
         const user = await User.create({
           name: req.body.name,
           password: bcrypt.hashSync(req.body.password, 8),
-          role: "customer",
+          role: "user",
           // TODO: add owners's checkbox in signup form
         });
         // User.findOne({

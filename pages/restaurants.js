@@ -55,7 +55,7 @@ const Restaurants = ({ serverData }) => {
   const [user, setUser] = React.useState();
   const [isAdmin, setIsAdmin] = React.useState(false);
   const [isOwner, setIsOwner] = React.useState(false);
-  const [isCustomer, setIsCustomer] = React.useState(false);
+  const [isUser, setisUser] = React.useState(false);
   const [deleteMessage, setDeleteMessage] = React.useState("");
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [page, setPage] = React.useState(0);
@@ -76,7 +76,7 @@ const Restaurants = ({ serverData }) => {
       setUser(res.data);
       if (res.data.role === "admin") setIsAdmin(true);
       if (res.data.role === "owner") setIsOwner(true);
-      if (res.data.role === "customer") setIsCustomer(true);
+      if (res.data.role === "user") setisUser(true);
     }
     if (!res || res.error) Router.replace("/");
   }, [res]);
@@ -238,7 +238,7 @@ const Restaurants = ({ serverData }) => {
                                 userId={user?.id}
                                 isAdmin={isAdmin}
                                 isOwner={isOwner}
-                                isCustomer={isCustomer}
+                                isUser={isUser}
                                 reviews={item.reviews}
                                 onReview={() => {
                                   createReview(item);
@@ -285,7 +285,7 @@ const Restaurants = ({ serverData }) => {
             userId={user?.id}
             forNewReview={forNewReview}
             isAdmin={isAdmin}
-            isCustomer={isCustomer}
+            isUser={isUser}
             onCompleted={() => {
               refreshData();
               setIsReviewModalOpen(false);

@@ -5,7 +5,7 @@
 [] - restaurant detailed view
 [x] - review date
 [x] - review rating
-[] - delete customer and its comments
+[] - delete user and its comments
 [x] - review owner's answering flux
 [] - show only owners restaurant
 [] - filters
