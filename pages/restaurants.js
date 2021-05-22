@@ -81,6 +81,15 @@ const Restaurants = ({ serverData }) => {
     if (!res || res.error) Router.replace("/");
   }, [res]);
 
+  React.useEffect(() => {
+    if (user?.role === "owner") {
+      const filteredRestaurants = restaurants.filter(
+        (item) => item.owner_id === user?.id
+      );
+      setRestaurants(filteredRestaurants);
+    }
+  }, [user]);
+
   if (!res || res.error) {
     return null;
   }
@@ -221,14 +230,7 @@ const Restaurants = ({ serverData }) => {
                         // if (item.is_rented && !isAdmin && !isRealtor)
                         //   return null;
                         return (
-                          <Grid
-                            key={item._id}
-                            item
-                            xs={12}
-                            sm={6}
-                            md={4}
-                            // lg={3}
-                          >
+                          <Grid key={item._id} item xs={12} sm={6} md={4}>
                             <Paper className={classes.paper}>
                               <RestaurantCard
                                 data={item}
@@ -315,19 +317,19 @@ const Restaurants = ({ serverData }) => {
 export async function getServerSideProps() {
   await dbConnect();
 
-  const result = await Restaurant.find({});
-  const userResult = await User.find({ role: "owner" });
+  const restaurantData = await Restaurant.find({});
+  const ownersData = await User.find({ role: "owner" });
 
-  const restaurants = JSON.parse(JSON.stringify(result));
+  const restaurants = JSON.parse(JSON.stringify(restaurantData));
 
-  // const restaurants = result.map((doc) => {
+  // const restaurants = restaurantData.map((doc) => {
   //   const restaurants = doc.toObject();
   //   restaurants._id = restaurants._id.toString();
 
   //   return restaurants;
   // });
 
-  const owners = userResult.map((doc) => {
+  const owners = ownersData.map((doc) => {
     const owners = doc.toObject();
     owners._id = owners._id.toString();
     return owners;
