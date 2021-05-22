@@ -15,39 +15,8 @@ export default async function signup(req, res) {
           name: req.body.name,
           password: bcrypt.hashSync(req.body.password, 8),
           role: "user",
-          // TODO: add owners's checkbox in signup form
         });
-        // User.findOne({
-        //   name: req.body.name,
-        // }).exec((err, user) => {
-        //   if (err) {
-        //     res.status(500).send({ message: err });
-        //     return;
-        //   }
-        //   if (!user) {
-        //     return res.status(404).send({ message: "User Not found." });
-        //   }
-        //   var passwordIsValid = bcrypt.compareSync(
-        //     req.body.password,
-        //     user.password
-        //   );
 
-        //   if (!passwordIsValid) {
-        //     return res.status(401).send({
-        //       accessToken: null,
-        //       message: "Invalid Password!",
-        //     });
-        //   }
-        //   var token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, {
-        //     expiresIn: 86400, // 24 hours
-        //   });
-        //   const curentUser = {
-        //     name: req.body.name,
-        //     token: token,
-        //   };
-        //   res.setHeader("Set-Cookie", `session=${JSON.stringify(curentUser)};`);
-        //   res.json({ message: "Logged in" });
-        // });
         var token = jwt.sign(
           { id: user.id, name: user.name, role: user.role },
           process.env.SECRET_KEY,
