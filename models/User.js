@@ -15,11 +15,8 @@ const User = new mongoose.Schema({
   },
 });
 
-// User.plugin(uniqueValidator);
-User.plugin(uniqueValidator, { type: "mongoose-unique-validator" });
-
-// User.plugin(uniqueValidator, {
-//   message: "Error, expected {PATH} to be unique.",
-// });
+User.plugin(uniqueValidator, {
+  message: "Error, this {PATH} already exists.",
+});
 
 export default mongoose.models.User || mongoose.model("User", User);

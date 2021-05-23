@@ -28,7 +28,8 @@ export default async function signup(req, res) {
         res.setHeader("Set-Cookie", `session=${token};`);
         return res.json({ message: "User registered successfully!" });
       } catch (error) {
-        return res.status(400).json({ success: false });
+        const message = error.errors.name.properties.message;
+        return res.status(400).json({ success: false, message: message });
       }
       break;
     default:

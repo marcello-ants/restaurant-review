@@ -35,23 +35,25 @@ const SignUpForm = ({ sendMutation }) => {
   const [form, setForm] = React.useState({ name: "", password: "" });
 
   const signup = async (form) => {
-    try {
-      const res = await fetch("/api/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
-      });
+    const res = await fetch("/api/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    });
 
-      if (!res.ok) {
-        throw new Error(res.status);
-      }
-
-      return res;
-    } catch (error) {
-      setErrorMessage("Failed to sign up");
+    if (!res.ok) {
+      return res
+        .json()
+        .then((json) => {
+          throw json;
+        })
+        .catch((err) => {
+          setErrorMessage(err.message);
+        });
     }
+    return res;
   };
 
   const formValidate = () => {
