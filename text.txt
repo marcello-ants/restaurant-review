@@ -18,10 +18,10 @@ and the reviews pending reply
 Owners can reply to each review once
 
 Restaurants detailed view should have:
-    * The overall average rating
-    * The highest rated review
-    * The lowest rated review
-    * Last reviews with rate, comment, and reply
+[ ] - The overall average rating
+[ ] - The highest rated review
+[ ] - The lowest rated review
+[ ] - Last reviews with rate, comment, and reply
 Restaurant List can be filtered by Rating
 
 REST API. Make it possible to perform all user actions via the API, including authentication.In any case, you should be able to explain how a REST API works and demonstrate that by creating functional tests that use the REST Layer directly. Please be prepared to use REST clients like Postman, cURL, etc. for this purpose.

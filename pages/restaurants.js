@@ -67,6 +67,8 @@ const Restaurants = ({ serverData }) => {
   const [forNewReview, setForNewReview] = React.useState(false);
   const [restaurants, setRestaurants] = React.useState(serverData.restaurants);
 
+  console.log(restaurants);
+
   React.useEffect(() => {
     setRestaurants(serverData.restaurants);
   }, [serverData]);
@@ -103,6 +105,7 @@ const Restaurants = ({ serverData }) => {
   const createRestaurant = () => {
     setRestaurantForm({
       name: "",
+      rating: 0,
       owner_id: "",
       image_url: "",
       reviews: [],
@@ -231,6 +234,7 @@ const Restaurants = ({ serverData }) => {
                         //   return null;
                         return (
                           <Grid key={item._id} item xs={12} sm={6} md={4}>
+                            <p>{item.rating}</p>
                             <Paper className={classes.paper}>
                               <RestaurantCard
                                 data={item}
@@ -320,14 +324,30 @@ export async function getServerSideProps() {
   const restaurantData = await Restaurant.find({});
   const ownersData = await User.find({ role: "owner" });
 
-  const restaurants = JSON.parse(JSON.stringify(restaurantData));
+  let ratings;
+  await Restaurant.aggregate([
+    { $unwind: "$reviews" },
+    {
+      $group: {
+        _id: "$_id",
+        averageRating: { $avg: "$reviews.rating" },
+      },
+    },
+  ]).then((res) => {
+    ratings = res;
+  });
 
-  // const restaurants = restaurantData.map((doc) => {
-  //   const restaurants = doc.toObject();
-  //   restaurants._id = restaurants._id.toString();
+  const ratedRestaurant = restaurantData.map((restItem) => {
+    const filteredRating = ratings.filter(
+      (item) => restItem._id.toString() === item._id.toString()
+    );
 
-  //   return restaurants;
-  // });
+    return Object.assign(restItem, {
+      rating: filteredRating[0]?.averageRating,
+    });
+  });
+
+  const restaurants = JSON.parse(JSON.stringify(ratedRestaurant));
 
   const owners = ownersData.map((doc) => {
     const owners = doc.toObject();
