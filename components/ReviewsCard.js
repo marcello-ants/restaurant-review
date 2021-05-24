@@ -6,11 +6,15 @@ import EditIcon from "@material-ui/icons/Edit";
 import StarIcon from "@material-ui/icons/Star";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
+import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 
 const useStyles = makeStyles(() => ({
   subtitle: {
     fontSize: 18,
     marginBottom: 15,
+  },
+  button: {
+    padding: 0,
   },
   flexCenter: {
     display: "flex",
@@ -18,7 +22,14 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const ReviewsCard = ({ reviews, restaurant, isAdmin, isOwner, editReview }) => {
+const ReviewsCard = ({
+  reviews,
+  restaurant,
+  isAdmin,
+  isOwner,
+  editReview,
+  deleteReview,
+}) => {
   const classes = useStyles();
 
   // order reviews to get top and highest raitings
@@ -77,14 +88,32 @@ const ReviewsCard = ({ reviews, restaurant, isAdmin, isOwner, editReview }) => {
           </Typography>
           {/* EDIT REVIEW */}
           {isAdmin && (
-            <IconButton aria-label="edit-restaurant">
-              <EditIcon
-                fontSize="small"
-                onClick={() => {
-                  editReview(item);
-                }}
-              />
-            </IconButton>
+            <>
+              <IconButton
+                aria-label="edit-review"
+                className={classes.button}
+                style={{ marginLeft: 12 }}
+              >
+                <EditIcon
+                  fontSize="small"
+                  onClick={() => {
+                    editReview(item);
+                  }}
+                />
+              </IconButton>
+              <IconButton
+                aria-label="delete-review"
+                className={classes.button}
+                style={{ marginLeft: 6 }}
+              >
+                <HighlightOffIcon
+                  fontSize="small"
+                  onClick={() => {
+                    deleteReview(item);
+                  }}
+                />
+              </IconButton>
+            </>
           )}
         </div>
         {/* COMMENT */}
@@ -153,19 +182,6 @@ const ReviewsCard = ({ reviews, restaurant, isAdmin, isOwner, editReview }) => {
           ({reviews.length} reviews)
         </Typography>
       </div>
-      {/* <div className={classes.flexCenter} style={{ marginBottom: 40 }}>
-        {[...Array(5)].map((_, i) => {
-          const starValue = i + 1;
-          return (
-            <StarIcon
-              style={{
-                color: starValue <= restaurant.rating ? "#ffd700" : "gray",
-              }}
-            />
-          );
-        })}
-        <Typography>{restaurant.rating}</Typography>
-      </div> */}
       {reviews.length === 0 ? (
         <Typography
           style={{
@@ -185,14 +201,14 @@ const ReviewsCard = ({ reviews, restaurant, isAdmin, isOwner, editReview }) => {
               marginBottom: 50,
             }}
           >
-            <div style={{ width: "50%", paddingRight: 20 }}>
+            <div style={{ width: "50%", paddingRight: 15 }}>
               <Typography className={classes.subtitle}>
                 Highest review:
               </Typography>
               <CommentItem item={topReview} />
             </div>
             {reviews.length > 1 && (
-              <div style={{ width: "50%", paddingLeft: 20 }}>
+              <div style={{ width: "50%", paddingLeft: 15 }}>
                 <Typography className={classes.subtitle}>
                   Lowest review:
                 </Typography>

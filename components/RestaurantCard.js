@@ -46,7 +46,8 @@ const useStyles = makeStyles((theme) => ({
   modalBody: {
     backgroundColor: "white",
     height: "calc(100vh - 200px)",
-    width: "calc(100% - 500px)",
+    width: "80%",
+    maxWidth: 900,
     margin: "auto",
     borderRadius: 10,
   },
@@ -75,7 +76,6 @@ const RestaurantCard = ({
   isOwner,
   onEdit,
   onCompleted,
-  onEditReview,
   onReview,
   onDelete,
 }) => {
@@ -115,6 +115,27 @@ const RestaurantCard = ({
     });
     setForNewReview(false);
     setIsReviewModalOpen(true);
+  };
+
+  const deleteReview = async (review) => {
+    const reviewId = review._id;
+
+    try {
+      const res = await fetch(`/api/restaurants/${restaurantId}/reviews`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(reviewId),
+      });
+      if (!res.ok) {
+        throw new Error(res.status);
+      }
+      refreshData();
+      return res;
+    } catch (error) {
+      setDeleteMessage("Failed to delete");
+    }
   };
 
   const isReviewed = reviews.reduce(
@@ -223,6 +244,7 @@ const RestaurantCard = ({
               isAdmin={isAdmin}
               isOwner={isOwner}
               editReview={(item) => editReview(item)}
+              deleteReview={(item) => deleteReview(item)}
             />
           </div>
         </div>

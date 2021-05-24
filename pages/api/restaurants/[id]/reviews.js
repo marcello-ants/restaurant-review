@@ -62,17 +62,23 @@ export default async function handler(req, res) {
       }
       break;
 
-    // case "DELETE" /* Delete a review by its ID */:
-    //   try {
-    //     const deletedRestaurant = await Restaurant.deleteOne({ _id: id });
-    //     if (!deletedRestaurant) {
-    //       return res.status(400).json({ success: false });
-    //     }
-    //     res.status(200).json({ success: true, data: {} });
-    //   } catch (error) {
-    //     res.status(400).json({ success: false });
-    //   }
-    //   break;
+    case "DELETE" /* Delete a review by its ID */:
+      try {
+        const reviewId = req.body;
+        const restaurant = await Restaurant.findById(id);
+
+        restaurant.reviews.pull(reviewId);
+
+        const newRestaurant = await restaurant.save();
+
+        if (!newRestaurant) {
+          return res.status(400).json({ success: false });
+        }
+        res.status(200).json({ success: true, data: {} });
+      } catch (error) {
+        res.status(400).json({ success: false });
+      }
+      break;
 
     default:
       res.status(400).json({ success: false });
