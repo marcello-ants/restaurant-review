@@ -67,8 +67,6 @@ const Restaurants = ({ serverData }) => {
   const [forNewReview, setForNewReview] = React.useState(false);
   const [restaurants, setRestaurants] = React.useState(serverData.restaurants);
 
-  console.log(restaurants);
-
   React.useEffect(() => {
     setRestaurants(serverData.restaurants);
   }, [serverData]);
@@ -138,16 +136,6 @@ const Restaurants = ({ serverData }) => {
     } catch (error) {
       setDeleteMessage("Failed to delete");
     }
-  };
-
-  const createReview = (item) => {
-    setReviewForm({
-      id: item._id,
-      comment: "",
-      rating: 0,
-    });
-    setForNewReview(true);
-    setIsReviewModalOpen(true);
   };
 
   const editReview = async (restaurantId, review) => {
@@ -233,19 +221,19 @@ const Restaurants = ({ serverData }) => {
                         // if (item.is_rented && !isAdmin && !isRealtor)
                         //   return null;
                         return (
-                          <Grid key={item._id} item xs={12} sm={6} md={4}>
-                            <p>{item.rating}</p>
+                          <Grid key={item._id} item xs={12} sm={6} lg={4}>
                             <Paper className={classes.paper}>
                               <RestaurantCard
-                                data={item}
-                                name={item.name}
-                                image={item.image_url}
+                                restaurant={item}
                                 // createdAt={item.created_at}
                                 userId={user?.id}
                                 isAdmin={isAdmin}
                                 isOwner={isOwner}
                                 isUser={isUser}
                                 reviews={item.reviews}
+                                onCompleted={() => {
+                                  refreshData();
+                                }}
                                 onReview={() => {
                                   createReview(item);
                                 }}
@@ -279,26 +267,7 @@ const Restaurants = ({ serverData }) => {
         </TableContainer>
       </div>
       {/* <div>{deleteMessage}</div> */}
-      <Modal
-        isOpen={isReviewModalOpen}
-        onModalClose={() => setIsReviewModalOpen(false)}
-      >
-        <div className={classes.modalBody}>
-          <ReviewForm
-            formId="add-review-form"
-            reviewForm={reviewForm}
-            // TODO: review global user info
-            userId={user?.id}
-            forNewReview={forNewReview}
-            isAdmin={isAdmin}
-            isUser={isUser}
-            onCompleted={() => {
-              refreshData();
-              setIsReviewModalOpen(false);
-            }}
-          />
-        </div>
-      </Modal>
+
       <Modal isOpen={isModalOpen} onModalClose={() => setIsModalOpen(false)}>
         <div className={classes.modalBody}>
           <RestaurantForm
@@ -343,7 +312,7 @@ export async function getServerSideProps() {
     );
 
     return Object.assign(restItem, {
-      rating: filteredRating[0]?.averageRating,
+      rating: filteredRating[0]?.averageRating.toFixed(2),
     });
   });
 

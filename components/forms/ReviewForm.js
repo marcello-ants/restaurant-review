@@ -1,5 +1,5 @@
 import * as React from "react";
-import { mutate } from "swr";
+import { useRouter } from "next/router";
 import { makeStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -44,40 +44,26 @@ const ReviewForm = ({
   forNewReview = true,
   onCompleted,
   userId,
+  restaurantId,
   isAdmin,
-  isCostumer,
+  isOwner,
+  isUser,
 }) => {
   const classes = useStyles();
+  const router = useRouter();
   const [errors, setErrors] = React.useState({});
   const [errorMessage, setErrorMessage] = React.useState("");
   const [form, setForm] = React.useState({
     ...reviewForm,
     // ...(forNewReview && { created_at: new Date().toString() }),
+    // ...(forNewReview && { date: moment().format("DD-MM-YYYY") }),
   });
 
-  // REVIEW PUT
-  const putData = async (form) => {
-    try {
-      const res = await fetch(`/api/restaurants/${reviewForm.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
-      });
-
-      if (!res.ok) {
-        throw new Error(res.status);
-      }
-
-      const { data } = await res.json();
-      mutate(`/api/restaurants/${reviewForm.id}`, data, false);
-      onCompleted();
-      return res;
-    } catch (error) {
-      setErrorMessage("Failed to update restaurant");
-    }
-  };
+  const [selectedDate, setDate] = React.useState(moment());
+  const [dateValue, setDateValue] = React.useState(
+    forNewReview ? moment().format("DD-MM-YYYY") : form.date
+  );
+  const [rating, setRating] = React.useState(forNewReview ? 0 : form.rating);
 
   // REVIEW POST
   const postData = async (form) => {
@@ -99,6 +85,8 @@ const ReviewForm = ({
       if (!res.ok) {
         throw new Error(res.status);
       }
+      const { data } = await res.json();
+      mutate(`/api/restaurants/${form.id}`, data, false);
       onCompleted();
       return res;
     } catch (error) {
@@ -106,19 +94,35 @@ const ReviewForm = ({
     }
   };
 
-  const formValidate = () => {
-    setErrors({});
-    let err = {};
-    if (!form.comment) err.comment = "comment is required";
-    // if (!form.rating) err.rating = "rating is required";
-    return err;
-  };
+  // REVIEW PUT
+  const putData = async (form) => {
+    const newReview = {
+      id: form.id,
+      rating: rating,
+      reply: form.reply,
+      comment: form.comment,
+      date: dateValue,
+    };
 
-  const [selectedDate, setDate] = React.useState(moment());
-  const [dateValue, setDateValue] = React.useState(
-    moment().format("DD-MM-YYYY")
-  );
-  const [rating, setRating] = React.useState(0);
+    try {
+      const res = await fetch(`/api/restaurants/${restaurantId}/reviews`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newReview),
+      });
+
+      if (!res.ok) {
+        throw new Error(res.status);
+      }
+
+      onCompleted();
+      return res;
+    } catch (error) {
+      setErrorMessage("Failed to update review");
+    }
+  };
 
   const onDateChange = (date, value) => {
     setDate(date);
@@ -141,9 +145,19 @@ const ReviewForm = ({
     });
   };
 
+  const formValidate = () => {
+    setErrors({});
+    let err = {};
+    if (!rating) err.rating = "rating can't be 0";
+    if (!form.comment) err.comment = "comment is required";
+    if (!form.reply && isOwner) err.reply = "reply is required";
+    return err;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const errs = formValidate();
+
     if (Object.keys(errs).length === 0) {
       forNewReview ? postData(form) : putData(form);
     } else {
@@ -174,24 +188,13 @@ const ReviewForm = ({
             <Grid item xs={6}>
               <ReactStars
                 count={5}
+                value={rating}
+                edit={!isOwner}
                 onChange={(newRating) => setRating(newRating)}
                 a11y={false}
                 size={24}
                 activeColor="#ffd700"
               />
-              {/* <TextField
-                error={errors && errors.rating}
-                id="rating"
-                name="rating"
-                label="rating"
-                type="number"
-                value={form.rating}
-                autoComplete="rating"
-                variant="outlined"
-                fullWidth
-                required
-                onChange={(e) => handleChange(e)}
-              /> */}
             </Grid>
             <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
               <Grid item xs={6}>
@@ -200,14 +203,16 @@ const ReviewForm = ({
                   showTodayButton={true}
                   value={selectedDate}
                   format="DD-MM-YYYY"
+                  disabled={isOwner}
+                  // error={errors && errors.date}
                   fullWidth
                   label="date visited"
                   variant="inline"
                   required
                   inputVariant="outlined"
                   inputValue={dateValue}
+                  // onError={console.log("error")}
                   onChange={onDateChange}
-                  // InputAdornmentProps={{ position: "end" }}
                   rifmFormatter={dateFormatter}
                 />
               </Grid>
@@ -219,33 +224,30 @@ const ReviewForm = ({
                 name="comment"
                 label="comment"
                 value={form.comment}
+                disabled={isOwner}
                 autoComplete="comment"
                 variant="outlined"
                 fullWidth
-                required
+                required={!isOwner}
                 onChange={(e) => handleChange(e)}
               />
             </Grid>
-            {/* {isAdmin && (
-              <Grid item xs={6}>
-                <FormControl variant="outlined" fullWidth>
-                  <InputLabel id="owner_id">owner</InputLabel>
-                  <Select
-                    error={errors && errors.owner_id}
-                    labelId="owner_id"
-                    id="owner_id"
-                    name="owner_id"
-                    label="owner"
-                    value={form.owner_id}
-                    onChange={(e) => handleChange(e)}
-                  >
-                    {owners.map((item) => (
-                      <MenuItem value={item._id}>{item.name}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+            {(isAdmin || isOwner) && (
+              <Grid item xs={12}>
+                <TextField
+                  error={errors && errors.reply}
+                  id="reply"
+                  name="reply"
+                  label="reply"
+                  value={form.reply}
+                  variant="outlined"
+                  fullWidth
+                  disabled={isAdmin && !form.reply}
+                  required={isOwner}
+                  onChange={(e) => handleChange(e)}
+                />
               </Grid>
-            )} */}
+            )}
           </Grid>
           <Button
             type="submit"
