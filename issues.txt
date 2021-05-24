@@ -2,7 +2,7 @@
 [x] - double user name
 [] - actions confirmation
 [] - actions post information
-[] - restaurant detailed view
+[x] - restaurant detailed view
 [x] - review date
 [x] - review rating
 [ ] - delete user and its comments
