@@ -1,10 +1,8 @@
 import * as React from "react";
 import { useRouter } from "next/router";
 import { makeStyles } from "@material-ui/core/styles";
-import ReactStars from "react-rating-stars-component";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import CardMedia from "@material-ui/core/CardMedia";
@@ -84,7 +82,6 @@ const RestaurantCard = ({
   const router = useRouter();
   const classes = useStyles();
   const [errors, setErrors] = React.useState({});
-
   const [reviewForm, setReviewForm] = React.useState({});
   const [forNewReview, setForNewReview] = React.useState(false);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -125,10 +122,6 @@ const RestaurantCard = ({
     false
   );
 
-  const ordered = reviews.sort(function (a, b) {
-    return b.rating - a.rating;
-  });
-
   return (
     <Card className={classes.root}>
       <CardHeader
@@ -139,7 +132,11 @@ const RestaurantCard = ({
           </Typography>
         }
         subheader={
-          <div className={classes.flexCenter}>
+          <div
+            className={classes.flexCenter}
+            style={{ cursor: "pointer" }}
+            onClick={() => setIsModalOpen(true)}
+          >
             <div className={classes.flexCenter} style={{ height: 30 }}>
               {[...Array(5)].map((_, i) => {
                 const starValue = i + 1;
@@ -164,8 +161,7 @@ const RestaurantCard = ({
             <Typography
               component="span"
               align="left"
-              style={{ fontSize: 14, marginLeft: 10, cursor: "pointer" }}
-              onClick={() => setIsModalOpen(true)}
+              style={{ fontSize: 14, marginLeft: 10 }}
             >
               ({reviews.length} reviews)
             </Typography>
@@ -221,33 +217,9 @@ const RestaurantCard = ({
             className={classes.paper}
             style={{ height: "-webkit-fill-available" }}
           >
-            {/* <div
-              style={{
-                width: "100%",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <ReactStars
-                  count={5}
-                  value={ordered[0].rating}
-                  a11y={false}
-                  isHalf={true}
-                  edit={false}
-                  size={18}
-                  activeColor="#ffd700"
-                />
-                <Typography
-                  component="span"
-                  align="left"
-                  style={{ fontSize: 14, marginLeft: 5 }}
-                >
-                  ({ordered[0].date} )
-                </Typography>
-              </div>
-              <Typography component="span">{ordered[0].comment}</Typography>
-            </div> */}
             <ReviewsCard
               reviews={reviews}
+              restaurant={restaurant}
               isAdmin={isAdmin}
               isOwner={isOwner}
               editReview={(item) => editReview(item)}

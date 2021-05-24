@@ -17,13 +17,12 @@ Reviews should have:
 
 [x] - When an Owner logs in, they will see a Restaurant List, only onwed by them
 [ ] - and the reviews pending reply
-
 [x] - Owners can reply to each review once
 
 Restaurants detailed view should have:
-[ ] - The overall average rating
-[ ] - The highest rated review
-[ ] - The lowest rated review
+[x] - The overall average rating
+[x] - The highest rated review
+[x] - The lowest rated review
 [x] - Last reviews with rate, comment, and reply
 
 [x]- - Restaurant List can be filtered by Rating

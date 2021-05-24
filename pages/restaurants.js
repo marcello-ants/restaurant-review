@@ -1,10 +1,8 @@
 import * as React from "react";
 import Router, { useRouter } from "next/router";
 import useMe from "../hooks/use-me";
-import Paper from "@material-ui/core/Paper";
-import { withStyles, makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
 import Restaurant from "../models/Restaurant";
 import User from "../models/User";
 import dbConnect from "../utils/dbConnect";
@@ -63,11 +61,8 @@ const Restaurants = ({ serverData }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(16);
-  const [isReviewModalOpen, setIsReviewModalOpen] = React.useState(false);
   const [forNewRestaurant, setForNewRestaurant] = React.useState(false);
   const [restaurantForm, setRestaurantForm] = React.useState({});
-  const [reviewForm, setReviewForm] = React.useState({});
-  const [forNewReview, setForNewReview] = React.useState(false);
   const [restaurants, setRestaurants] = React.useState(serverData.restaurants);
   const [filter, setFilter] = React.useState("");
 
@@ -330,10 +325,15 @@ const Restaurants = ({ serverData }) => {
                         page * rowsPerPage + rowsPerPage
                       )
                       .map((item) => {
-                        // if (item.is_rented && !isAdmin && !isRealtor)
-                        //   return null;
                         return (
-                          <Grid key={item._id} item xs={12} sm={6} lg={4}>
+                          <Grid
+                            key={item._id}
+                            item
+                            xs={12}
+                            sm={6}
+                            md={4}
+                            lg={4}
+                          >
                             <RestaurantCard
                               restaurant={item}
                               // createdAt={item.created_at}
