@@ -20,25 +20,6 @@ export default async function login(req, res) {
         }
 
         res.status(200).json({ success: true, data: user });
-        // User.findOne({
-        //   name: req.body.name,
-        // }).exec((err, user) => {
-        //   if (err) {
-        //     res.status(500).send({ message: err });
-        //     return;
-        //   }
-
-        //   if (!user) {
-        //     return res.status(404).send({ message: "User Not found." });
-        //   }
-
-        //   req.body.password,
-        //   user.password
-        //   compare passwords
-
-        //   res.setHeader("Set-Cookie", `session=${token};`);
-        //   res.json({ message: "Logged in" });
-        // });
       } catch (error) {
         res.status(400).json({ success: false });
       }

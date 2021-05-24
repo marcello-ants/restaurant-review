@@ -89,7 +89,7 @@ const ReviewForm = ({
       onCompleted();
       return res;
     } catch (error) {
-      setErrorMessage("Failed to add restaurant");
+      setErrorMessage("Failed to add review");
     }
   };
 
@@ -216,7 +216,6 @@ const ReviewForm = ({
                   format="DD/MM/YYYY"
                   inputVariant="outlined"
                   inputValue={dateValue}
-                  onError={console.log("error")}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment>

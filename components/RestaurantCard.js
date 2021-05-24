@@ -20,7 +20,6 @@ import ReviewsCard from "./ReviewsCard";
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: "0 16px",
-    // maxWidth: 200,
   },
   flexBetween: {
     display: "flex",
@@ -70,14 +69,11 @@ const useStyles = makeStyles((theme) => ({
 const RestaurantCard = ({
   restaurant,
   reviews,
-  //   createdAt,
   isUser,
   userId,
   isAdmin,
   isOwner,
   onEdit,
-  onCompleted,
-  onReview,
   onDelete,
 }) => {
   const router = useRouter();
@@ -145,8 +141,15 @@ const RestaurantCard = ({
     false
   );
 
+  const pendingReply = reviews.filter((item) => !item.reply);
+
   return (
-    <Card className={classes.root}>
+    <Card
+      className={classes.root}
+      style={{
+        border: isOwner && pendingReply.length > 0 ? "1px solid red" : "",
+      }}
+    >
       <CardHeader
         style={{ paddingLeft: 5 }}
         title={
@@ -267,7 +270,6 @@ const RestaurantCard = ({
           <ReviewForm
             formId="add-review-form"
             reviewForm={reviewForm}
-            // TODO: review global user info
             userId={userId}
             restaurantId={restaurantId}
             forNewReview={forNewReview}
@@ -276,9 +278,7 @@ const RestaurantCard = ({
             isAdmin={isAdmin}
             onCompleted={() => {
               setIsReviewModalOpen(false);
-              // setIsModalOpen(false);
               refreshData();
-              // onCompleted();
             }}
           />
         </div>

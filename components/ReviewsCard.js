@@ -1,12 +1,14 @@
 import * as React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import ReactStars from "react-rating-stars-component";
+import Button from "@material-ui/core/Button";
 import CardContent from "@material-ui/core/CardContent";
 import EditIcon from "@material-ui/icons/Edit";
 import StarIcon from "@material-ui/icons/Star";
 import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
+import ReplyIcon from "@material-ui/icons/Reply";
+import Typography from "@material-ui/core/Typography";
 import DeleteDialog from "./DeleteDialog";
 
 const useStyles = makeStyles(() => ({
@@ -53,7 +55,7 @@ const ReviewsCard = ({
       <div
         style={{
           height: "calc(100% - 30px)",
-          border: "1px solid gray",
+          border: isOwner && !item.reply ? "1px solid red" : "1px solid gray",
           borderRadius: 8,
           padding: 15,
         }}
@@ -135,14 +137,19 @@ const ReviewsCard = ({
             </div>
           )}
         </div>
+
         {isOwner && !item.reply && (
-          <button
+          <Button
+            aria-label="reply-review"
+            variant="contained"
+            size="small"
+            startIcon={<ReplyIcon />}
             onClick={() => {
               editReview(item);
             }}
           >
-            reply
-          </button>
+            Reply
+          </Button>
         )}
       </div>
     );

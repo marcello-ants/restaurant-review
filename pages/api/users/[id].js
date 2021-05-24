@@ -35,12 +35,6 @@ export default async function handler(req, res) {
           role: req.body.role,
         };
 
-        // const newUser = {
-        //   name: req.body.name,
-        //   password: bcrypt.hashSync(req.body.password, 8),
-        //   role: req.body.role,
-        // };
-
         const user = await User.findByIdAndUpdate(id, newUser, {
           new: true,
           runValidators: true,

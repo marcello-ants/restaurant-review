@@ -41,6 +41,8 @@ const RestaurantForm = ({
   forNewRestaurant = true,
   onCompleted,
   isAdmin,
+  isOwner,
+  userId,
 }) => {
   const classes = useStyles();
   const [errors, setErrors] = React.useState({});
@@ -76,13 +78,18 @@ const RestaurantForm = ({
 
   // RESTAURANT POST
   const postData = async (form) => {
+    const newRestaurant = {
+      ...form,
+      owner_id: isOwner ? userId : form.owner_id,
+    };
+
     try {
       const res = await fetch("/api/restaurants", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(newRestaurant),
       });
       if (!res.ok) {
         throw new Error(res.status);
@@ -98,7 +105,7 @@ const RestaurantForm = ({
     setErrors({});
     let err = {};
     if (!form.name) err.name = "name is required";
-    if (!form.owner_id) err.owner_id = "owner ID is required";
+    if (!isOwner && !form.owner_id) err.owner_id = "owner ID is required";
     if (!form.image) err.image = "image is required";
     return err;
   };
@@ -145,7 +152,7 @@ const RestaurantForm = ({
           onSubmit={(e) => handleSubmit(e)}
         >
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid item xs={isAdmin ? 6 : 12}>
               <TextField
                 error={errors && errors.name}
                 id="name"
@@ -162,19 +169,6 @@ const RestaurantForm = ({
             </Grid>
             {isAdmin && (
               <Grid item xs={6}>
-                {/* ADMIN */}
-                {/* <TextField
-                  error={errors && errors.owner}
-                  id="owner"
-                  name="owner"
-                  label="owner"
-                  value={form.owner}
-                  autoComplete="owner"
-                  variant="outlined"
-                  fullWidth
-                  required
-                  onChange={(e) => handleChange(e)}
-                /> */}
                 <FormControl variant="outlined" fullWidth>
                   <InputLabel id="owner_id">owner</InputLabel>
                   <Select

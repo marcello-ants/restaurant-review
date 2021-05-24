@@ -336,18 +336,11 @@ const Restaurants = ({ serverData }) => {
                           >
                             <RestaurantCard
                               restaurant={item}
-                              // createdAt={item.created_at}
                               userId={user?.id}
                               isAdmin={isAdmin}
                               isOwner={isOwner}
                               isUser={isUser}
                               reviews={item.reviews}
-                              onCompleted={() => {
-                                refreshData();
-                              }}
-                              onReview={() => {
-                                createReview(item);
-                              }}
                               onEditReview={(id, item) => {
                                 editReview(id, item);
                               }}
@@ -382,9 +375,11 @@ const Restaurants = ({ serverData }) => {
           <RestaurantForm
             formId="add-restaurant-form"
             restaurantForm={restaurantForm}
-            owners={owners}
             forNewRestaurant={forNewRestaurant}
+            owners={owners}
+            userId={user?.id}
             isAdmin={isAdmin}
+            isOwner={isOwner}
             onCompleted={() => {
               refreshData();
               setIsModalOpen(false);
