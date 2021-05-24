@@ -24,7 +24,7 @@ Restaurants detailed view should have:
 [ ] - The overall average rating
 [ ] - The highest rated review
 [ ] - The lowest rated review
-[ ] - Last reviews with rate, comment, and reply
+[x] - Last reviews with rate, comment, and reply
 
 [x]- - Restaurant List can be filtered by Rating
 

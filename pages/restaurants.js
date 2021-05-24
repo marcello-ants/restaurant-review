@@ -98,6 +98,13 @@ const Restaurants = ({ serverData }) => {
     if (!filter) {
       setRestaurants(serverData.restaurants);
     }
+    if (filter === 0) {
+      const filteredData = serverData.restaurants.filter(
+        (item) => !item.rating
+      );
+      setRestaurants(filteredData);
+    }
+
     if (filter) {
       const filteredData = serverData.restaurants.filter(
         (item) => item.rating >= filter
@@ -197,12 +204,20 @@ const Restaurants = ({ serverData }) => {
           justifyContent: "space-between",
         }}
       >
-        <span>{`${value} +`}</span>
-        <div>
-          {[...Array(value)].map((_, i) => {
-            return <StarIcon fontSize="small" style={{ color: "#ffd700" }} />;
-          })}
-        </div>
+        {value === 0 ? (
+          <span>no reviews</span>
+        ) : (
+          <>
+            <span>{`${value} +`}</span>
+            <div>
+              {[...Array(value)].map((_, i) => {
+                return (
+                  <StarIcon fontSize="small" style={{ color: "#ffd700" }} />
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
     );
   };
@@ -239,6 +254,7 @@ const Restaurants = ({ serverData }) => {
               >
                 <FormControl
                   variant="outlined"
+                  color="primary"
                   className={classes.formControl}
                   style={{ width: 200 }}
                 >
@@ -251,6 +267,9 @@ const Restaurants = ({ serverData }) => {
                     displayEmpty
                     onChange={(e) => setFilter(e.target.value)}
                   >
+                    <MenuItem value={0}>
+                      <FilterItem value={0} />
+                    </MenuItem>
                     <MenuItem value={1}>
                       <FilterItem value={1} />
                     </MenuItem>
@@ -265,14 +284,26 @@ const Restaurants = ({ serverData }) => {
                     </MenuItem>
                   </Select>
                 </FormControl>
-                {filter && (
-                  <Chip
-                    label={`filter: ${filter}+`}
-                    onClick={() => setFilter("")}
-                    onDelete={() => setFilter("")}
-                    color="primary"
-                    style={{ marginLeft: 15 }}
-                  />
+                {filter !== "" && (
+                  <>
+                    {filter ? (
+                      <Chip
+                        label={`filter: ${filter}+`}
+                        color="primary"
+                        style={{ marginLeft: 15 }}
+                        onClick={() => setFilter("")}
+                        onDelete={() => setFilter("")}
+                      />
+                    ) : (
+                      <Chip
+                        label="filter: no reviews"
+                        color="primary"
+                        style={{ marginLeft: 15 }}
+                        onClick={() => setFilter("")}
+                        onDelete={() => setFilter("")}
+                      />
+                    )}
+                  </>
                 )}
               </div>
               {(isAdmin || isOwner) && (

@@ -23,9 +23,13 @@ const useStyles = makeStyles((theme) => ({
     padding: "0 16px",
     // maxWidth: 200,
   },
-  flex: {
+  flexBetween: {
     display: "flex",
     justifyContent: "space-between",
+  },
+  flexCenter: {
+    display: "flex",
+    alignItems: "center",
   },
   button: {
     padding: 5,
@@ -130,32 +134,37 @@ const RestaurantCard = ({
       <CardHeader
         style={{ paddingLeft: 5 }}
         title={
-          <Typography component="h2" align="left" style={{ fontSize: 20 }}>
+          <Typography component="h2" align="left" style={{ fontSize: 24 }}>
             {name}
           </Typography>
         }
         subheader={
-          <div style={{ display: "flex", alignItems: "center" }}>
-            {[...Array(5)].map((_, i) => {
-              const starValue = i + 1;
-              return (
-                <StarIcon
-                  style={{ color: starValue <= rating ? "#ffd700" : "gray" }}
-                  fontSize="small"
-                />
-              );
-            })}
+          <div className={classes.flexCenter}>
+            <div className={classes.flexCenter} style={{ height: 30 }}>
+              {[...Array(5)].map((_, i) => {
+                const starValue = i + 1;
+                return (
+                  <StarIcon
+                    style={{ color: starValue <= rating ? "#ffd700" : "gray" }}
+                  />
+                );
+              })}
+            </div>
+            {/* RATING */}
+            {rating && (
+              <Typography
+                component="span"
+                align="left"
+                style={{ fontSize: 18, marginLeft: 8, fontWeight: 600 }}
+              >
+                {rating}
+              </Typography>
+            )}
+            {/* TOTAL REVIEWS */}
             <Typography
               component="span"
               align="left"
-              style={{ fontSize: 16, marginLeft: 5 }}
-            >
-              {rating}
-            </Typography>
-            <Typography
-              component="span"
-              align="left"
-              style={{ fontSize: 15, marginLeft: 10, cursor: "pointer" }}
+              style={{ fontSize: 14, marginLeft: 10, cursor: "pointer" }}
               onClick={() => setIsModalOpen(true)}
             >
               ({reviews.length} reviews)
@@ -163,7 +172,13 @@ const RestaurantCard = ({
           </div>
         }
       />
-      <CardMedia className={classes.media} image={image} title={name} />
+      <CardMedia
+        className={classes.media}
+        image={image}
+        title={name}
+        onClick={() => setIsModalOpen(true)}
+        style={{ cursor: "pointer" }}
+      />
       <CardActions disableSpacing style={{ paddingLeft: 0 }}>
         {/* CREATE REVIEW */}
         {isUser && (
@@ -179,7 +194,7 @@ const RestaurantCard = ({
           </IconButton>
         )}
         {isAdmin && (
-          <div className={classes.flex} style={{ width: "100%" }}>
+          <div className={classes.flexBetween} style={{ width: "100%" }}>
             {/* EDIT RESTAURANT */}
             <IconButton
               aria-label="edit-restaurant"

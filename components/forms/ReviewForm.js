@@ -203,6 +203,7 @@ const ReviewForm = ({
                   autoOk={true}
                   showTodayButton={true}
                   value={selectedDate}
+                  maxDate={new Date()}
                   format="DD/MM/YYYY"
                   disabled={isOwner}
                   // error={errors && errors.date}
