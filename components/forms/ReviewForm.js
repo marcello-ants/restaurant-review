@@ -61,7 +61,7 @@ const ReviewForm = ({
 
   const [selectedDate, setDate] = React.useState(moment());
   const [dateValue, setDateValue] = React.useState(
-    forNewReview ? moment().format("DD-MM-YYYY") : form.date
+    forNewReview ? moment().format("DD/MM/YYYY") : form.date
   );
   const [rating, setRating] = React.useState(forNewReview ? 0 : form.rating);
 
@@ -203,7 +203,7 @@ const ReviewForm = ({
                   autoOk={true}
                   showTodayButton={true}
                   value={selectedDate}
-                  format="DD-MM-YYYY"
+                  format="DD/MM/YYYY"
                   disabled={isOwner}
                   // error={errors && errors.date}
                   fullWidth

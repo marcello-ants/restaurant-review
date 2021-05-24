@@ -187,7 +187,9 @@ const RestaurantForm = ({
                     onChange={(e) => handleChange(e)}
                   >
                     {owners.map((item) => (
-                      <MenuItem value={item._id}>{item.name}</MenuItem>
+                      <MenuItem key={item._id} value={item._id}>
+                        {item.name}
+                      </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
