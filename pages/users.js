@@ -1,4 +1,5 @@
 import * as React from "react";
+import { makeStyles } from "@material-ui/core/styles";
 import Modal from "../components/Modal";
 import TopBar from "../components/TopBar";
 import UserForm from "../components/forms/UserForm";
@@ -8,7 +9,9 @@ import dbConnect from "../utils/dbConnect";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Fab from "@material-ui/core/Fab";
 import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/core/styles";
+import IconButton from "@material-ui/core/IconButton";
+import CheckIcon from "@material-ui/icons/Check";
+import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -42,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
   },
+  button: {
+    padding: 8,
+  },
   modalBody: {
     backgroundColor: "white",
     height: "calc(100vh - 120px)",
@@ -68,6 +74,10 @@ const Users = ({ users }) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [confirmation, setConfirmation] = React.useState({
+    isOpen: false,
+    id: null,
+  });
   const [userForm, setUserForm] = React.useState({});
   const [forNewUser, setForNewUser] = React.useState(false);
 
@@ -191,15 +201,49 @@ const Users = ({ users }) => {
                           </Fab>
                         </TableCell>
                         <TableCell align="center">
-                          <Fab
-                            size="small"
-                            color="secondary"
-                            aria-label="delete-button"
-                            disabled={user.role === "admin"}
-                            onClick={() => deleteUser(user._id)}
-                          >
-                            <DeleteIcon />
-                          </Fab>
+                          {confirmation.id !== user._id && (
+                            <Fab
+                              size="small"
+                              color="secondary"
+                              aria-label="delete-button"
+                              disabled={user.role === "admin"}
+                              onClick={() =>
+                                setConfirmation({ open: true, id: user._id })
+                              }
+                            >
+                              <DeleteIcon />
+                            </Fab>
+                          )}
+                          {confirmation.open && confirmation.id === user._id && (
+                            <>
+                              <span>Are you sure?</span>
+                              <div>
+                                <IconButton
+                                  className={classes.button}
+                                  onClick={() =>
+                                    setConfirmation({ open: false, id: null })
+                                  }
+                                >
+                                  <HighlightOffIcon
+                                    color="secondary"
+                                    style={{ fontSize: 28 }}
+                                  />
+                                </IconButton>
+                                <IconButton
+                                  className={classes.button}
+                                  onClick={() => {
+                                    deleteUser(user._id);
+                                    setConfirmation({ open: false, id: null });
+                                  }}
+                                >
+                                  <CheckIcon
+                                    color="primary"
+                                    style={{ fontSize: 28 }}
+                                  />
+                                </IconButton>
+                              </div>
+                            </>
+                          )}
                         </TableCell>
                       </TableRow>
                     );

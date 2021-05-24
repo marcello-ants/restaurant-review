@@ -7,6 +7,7 @@ import StarIcon from "@material-ui/icons/Star";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
+import DeleteDialog from "./DeleteDialog";
 
 const useStyles = makeStyles(() => ({
   subtitle: {
@@ -31,6 +32,7 @@ const ReviewsCard = ({
   deleteReview,
 }) => {
   const classes = useStyles();
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
   // order reviews to get top and highest raitings
   const ordered = [...reviews].sort(function (a, b) {
@@ -86,33 +88,36 @@ const ReviewsCard = ({
           >
             ({item.date})
           </Typography>
-          {/* EDIT REVIEW */}
           {isAdmin && (
             <>
+              {/* EDIT REVIEW */}
               <IconButton
                 aria-label="edit-review"
                 className={classes.button}
                 style={{ marginLeft: 12 }}
+                onClick={() => {
+                  editReview(item);
+                }}
               >
-                <EditIcon
-                  fontSize="small"
-                  onClick={() => {
-                    editReview(item);
-                  }}
-                />
+                <EditIcon fontSize="small" />
               </IconButton>
+              {/* DELETE REVIEW */}
               <IconButton
                 aria-label="delete-review"
                 className={classes.button}
+                onClick={() => setIsDialogOpen(true)}
                 style={{ marginLeft: 6 }}
               >
-                <HighlightOffIcon
-                  fontSize="small"
-                  onClick={() => {
-                    deleteReview(item);
-                  }}
-                />
+                <HighlightOffIcon color="secondary" fontSize="small" />
               </IconButton>
+              <DeleteDialog
+                isOpen={isDialogOpen}
+                onCancel={() => setIsDialogOpen(false)}
+                onConfirm={() => {
+                  deleteReview(item);
+                  setIsDialogOpen(false);
+                }}
+              />
             </>
           )}
         </div>

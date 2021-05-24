@@ -14,6 +14,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import StarIcon from "@material-ui/icons/Star";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
+import DeleteDialog from "./DeleteDialog";
 import ReviewsCard from "./ReviewsCard";
 
 const useStyles = makeStyles((theme) => ({
@@ -84,6 +85,7 @@ const RestaurantCard = ({
   const [errors, setErrors] = React.useState({});
   const [reviewForm, setReviewForm] = React.useState({});
   const [forNewReview, setForNewReview] = React.useState(false);
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [isReviewModalOpen, setIsReviewModalOpen] = React.useState(false);
 
@@ -224,10 +226,18 @@ const RestaurantCard = ({
             <IconButton
               aria-label="delete-restaurant"
               className={classes.button}
-              onClick={() => onDelete()}
+              onClick={() => setIsDialogOpen(true)}
             >
               <HighlightOffIcon color="secondary" fontSize="large" />
             </IconButton>
+            <DeleteDialog
+              isOpen={isDialogOpen}
+              onCancel={() => setIsDialogOpen(false)}
+              onConfirm={() => {
+                onDelete();
+                setIsDialogOpen(false);
+              }}
+            />
           </div>
         )}
       </CardActions>
