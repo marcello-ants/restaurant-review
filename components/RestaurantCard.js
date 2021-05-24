@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useRouter } from "next/router";
 import { makeStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -19,7 +20,7 @@ import ReviewsCard from "./ReviewsCard";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: "0 16px",
+    padding: "0 16px 12px",
   },
   flexBetween: {
     display: "flex",
@@ -30,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   button: {
-    padding: 5,
+    padding: "6px 12px",
   },
   media: {
     paddingTop: "56.25%", // 16:9
@@ -204,16 +205,19 @@ const RestaurantCard = ({
       <CardActions disableSpacing style={{ paddingLeft: 0 }}>
         {/* CREATE REVIEW */}
         {isUser && (
-          <IconButton
-            aria-label="add-comment"
-            disabled={isReviewed}
+          <Button
             className={classes.button}
+            aria-label="add-comment"
+            variant="contained"
+            disabled={isReviewed}
+            color="primary"
+            startIcon={<AddCommentIcon size="large" />}
             onClick={() => {
               createReview();
             }}
           >
-            <AddCommentIcon fontSize="large" />
-          </IconButton>
+            Review
+          </Button>
         )}
         {isAdmin && (
           <div className={classes.flexBetween} style={{ width: "100%" }}>
