@@ -85,8 +85,8 @@ const ReviewForm = ({
       if (!res.ok) {
         throw new Error(res.status);
       }
-      const { data } = await res.json();
-      mutate(`/api/restaurants/${form.id}`, data, false);
+      // const { data } = await res.json();
+      // mutate(`/api/restaurants/${form.id}`, data, false);
       onCompleted();
       return res;
     } catch (error) {
