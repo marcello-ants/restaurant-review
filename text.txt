@@ -3,7 +3,10 @@
 Implement 3 roles with different permission levels
 [x] - Regular User: Can rate and leave a comment for a restaurant
 [x] - Owner: Can create restaurants and reply to comments about owned restaurants
-[ ] - Admin: Can edit/delete all users, restaurants, comments, and reviews
+[ ] - Admin: can edit/delete all
+    [x] - users
+    [x] - restaurants
+    [ ] - comments and reviews
 
 Reviews should have:
 [x] - A 5 star based rating

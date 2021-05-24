@@ -13,6 +13,7 @@ import Modal from "../components/Modal";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import AddCommentIcon from "@material-ui/icons/AddComment";
 import EditIcon from "@material-ui/icons/Edit";
+import StarIcon from "@material-ui/icons/Star";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 
@@ -73,9 +74,6 @@ const RestaurantCard = ({
   const router = useRouter();
   const classes = useStyles();
   const [errors, setErrors] = React.useState({});
-  const [replies, setReplies] = React.useState(
-    [...Array(reviews.length)].map((_, i) => "")
-  );
 
   const [reviewForm, setReviewForm] = React.useState({});
   const [forNewReview, setForNewReview] = React.useState(false);
@@ -130,15 +128,15 @@ const RestaurantCard = ({
         }
         subheader={
           <div style={{ display: "flex", alignItems: "center" }}>
-            <ReactStars
-              count={5}
-              value={rating}
-              a11y={false}
-              isHalf={true}
-              edit={false}
-              size={18}
-              activeColor="#ffd700"
-            />
+            {[...Array(5)].map((_, i) => {
+              const starValue = i + 1;
+              return (
+                <StarIcon
+                  style={{ color: starValue <= rating ? "#ffd700" : "gray" }}
+                  fontSize="small"
+                />
+              );
+            })}
             <Typography
               component="span"
               align="left"
@@ -173,15 +171,14 @@ const RestaurantCard = ({
         {/* DELETE RESTAURANT */}
         {isAdmin && (
           <>
-            <IconButton aria-label="edit-restaurant">
-              <EditIcon fontSize="large" onClick={() => onEdit()} />
+            <IconButton aria-label="edit-restaurant" onClick={() => onEdit()}>
+              <EditIcon fontSize="large" />
             </IconButton>
-            <IconButton aria-label="delete-restaurant">
-              <HighlightOffIcon
-                color="secondary"
-                fontSize="large"
-                onClick={() => onDelete()}
-              />
+            <IconButton
+              aria-label="delete-restaurant"
+              onClick={() => onDelete()}
+            >
+              <HighlightOffIcon color="secondary" fontSize="large" />
             </IconButton>
           </>
         )}
@@ -268,37 +265,6 @@ const RestaurantCard = ({
                       reply
                     </button>
                   )}
-                  {/* {isOwner && !item.reply && (
-                      <>
-                        <Grid item xs={12}>
-                          <TextField
-                            error={errors && errors.reply}
-                            id={`${item._id}-reply`}
-                            name="reply"
-                            label="reply"
-                            value={replies[index]}
-                            autoComplete="reply"
-                            variant="outlined"
-                            fullWidth
-                            onChange={(e) => {
-                              let newArr = [...replies];
-                              newArr[index] = e.target.value;
-                              setReplies(newArr);
-                            }}
-                          />
-                          <Button
-                            className={classes.button}
-                            startIcon={<DeleteIcon />}
-                            onClick={() => {
-                              // onEditReview();
-                              handleSubmit(item, replies[index]);
-                            }}
-                          >
-                            Review
-                          </Button>
-                        </Grid>
-                      </>
-                    )} */}
                 </div>
               ))}
             </CardContent>
@@ -321,9 +287,10 @@ const RestaurantCard = ({
             isOwner={isOwner}
             isAdmin={isAdmin}
             onCompleted={() => {
-              onCompleted();
-              // refreshData();
               setIsReviewModalOpen(false);
+              setIsModalOpen(false);
+              refreshData();
+              // onCompleted();
             }}
           />
         </div>

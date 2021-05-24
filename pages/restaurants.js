@@ -310,13 +310,16 @@ export async function getServerSideProps() {
     const filteredRating = ratings.filter(
       (item) => restItem._id.toString() === item._id.toString()
     );
-
     return Object.assign(restItem, {
       rating: filteredRating[0]?.averageRating.toFixed(2),
     });
   });
 
-  const restaurants = JSON.parse(JSON.stringify(ratedRestaurant));
+  const orderedRestaurant = ratedRestaurant.sort(function (a, b) {
+    return b.rating - a.rating;
+  });
+
+  const restaurants = JSON.parse(JSON.stringify(orderedRestaurant));
 
   const owners = ownersData.map((doc) => {
     const owners = doc.toObject();
