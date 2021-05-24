@@ -9,14 +9,17 @@ import Restaurant from "../models/Restaurant";
 import User from "../models/User";
 import dbConnect from "../utils/dbConnect";
 import Modal from "../components/Modal";
-import PublicIcon from "@material-ui/icons/Public";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import Chip from "@material-ui/core/Chip";
 import Fab from "@material-ui/core/Fab";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Slider from "@material-ui/core/Slider";
+import StarIcon from "@material-ui/icons/Star";
 import TopBar from "../components/TopBar";
 import RestaurantCard from "../components/RestaurantCard";
 import RestaurantForm from "../components/forms/RestaurantForm";
-import ReviewForm from "../components/forms/ReviewForm";
 import AddIcon from "@material-ui/icons/Add";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -66,6 +69,7 @@ const Restaurants = ({ serverData }) => {
   const [reviewForm, setReviewForm] = React.useState({});
   const [forNewReview, setForNewReview] = React.useState(false);
   const [restaurants, setRestaurants] = React.useState(serverData.restaurants);
+  const [filter, setFilter] = React.useState("");
 
   React.useEffect(() => {
     setRestaurants(serverData.restaurants);
@@ -89,6 +93,18 @@ const Restaurants = ({ serverData }) => {
       setRestaurants(filteredRestaurants);
     }
   }, [user]);
+
+  React.useEffect(() => {
+    if (!filter) {
+      setRestaurants(serverData.restaurants);
+    }
+    if (filter) {
+      const filteredData = serverData.restaurants.filter(
+        (item) => item.rating >= filter
+      );
+      setRestaurants(filteredData);
+    }
+  }, [filter]);
 
   if (!res || res.error) {
     return null;
@@ -172,6 +188,25 @@ const Restaurants = ({ serverData }) => {
     setPage(0);
   };
 
+  const FilterItem = ({ value }) => {
+    return (
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <span>{`${value} +`}</span>
+        <div>
+          {[...Array(value)].map((_, i) => {
+            return <StarIcon fontSize="small" style={{ color: "#ffd700" }} />;
+          })}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       <TopBar />
@@ -189,11 +224,57 @@ const Restaurants = ({ serverData }) => {
             <div
               style={{
                 display: "flex",
+                width: "100%",
+                alignItems: "center",
                 justifyContent: "space-between",
                 marginLeft: 30,
                 marginRight: 10,
               }}
             >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <FormControl
+                  variant="outlined"
+                  className={classes.formControl}
+                  style={{ width: 200 }}
+                >
+                  <InputLabel id="filter-select">filter by</InputLabel>
+                  <Select
+                    labelId="filter-select"
+                    id="filter-select"
+                    value={filter}
+                    label="filter by"
+                    displayEmpty
+                    onChange={(e) => setFilter(e.target.value)}
+                  >
+                    <MenuItem value={1}>
+                      <FilterItem value={1} />
+                    </MenuItem>
+                    <MenuItem value={2}>
+                      <FilterItem value={2} />
+                    </MenuItem>
+                    <MenuItem value={3}>
+                      <FilterItem value={3} />
+                    </MenuItem>
+                    <MenuItem value={4}>
+                      <FilterItem value={4} />
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+                {filter && (
+                  <Chip
+                    label={`filter: ${filter}+`}
+                    onClick={() => setFilter("")}
+                    onDelete={() => setFilter("")}
+                    color="primary"
+                    style={{ marginLeft: 15 }}
+                  />
+                )}
+              </div>
               {(isAdmin || isOwner) && (
                 <Fab
                   color="primary"
@@ -267,7 +348,6 @@ const Restaurants = ({ serverData }) => {
         </TableContainer>
       </div>
       {/* <div>{deleteMessage}</div> */}
-
       <Modal isOpen={isModalOpen} onModalClose={() => setIsModalOpen(false)}>
         <div className={classes.modalBody}>
           <RestaurantForm
