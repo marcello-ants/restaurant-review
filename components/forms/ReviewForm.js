@@ -8,11 +8,10 @@ import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import TextField from "@material-ui/core/TextField";
 import ReactStars from "react-rating-stars-component";
+import InputAdornment from "@material-ui/core/InputAdornment";
 import Typography from "@material-ui/core/Typography";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
+import Event from "@material-ui/icons/Event";
+import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
 import moment from "moment";
 
@@ -199,23 +198,33 @@ const ReviewForm = ({
             </Grid>
             <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
               <Grid item xs={6}>
-                <KeyboardDatePicker
+                <DatePicker
                   autoOk={true}
                   showTodayButton={true}
-                  value={selectedDate}
-                  maxDate={new Date()}
-                  format="DD/MM/YYYY"
-                  disabled={isOwner}
-                  // error={errors && errors.date}
-                  fullWidth
-                  label="date visited"
                   variant="inline"
+                  clearable
+                  value={selectedDate}
+                  placeholder="10/10/2018"
+                  disabled={isOwner}
+                  disableFuture={true}
+                  maxDate={new Date()}
+                  fullWidth
                   required
+                  label="date visited"
+                  rifmFormatter={dateFormatter}
+                  style={{ cursor: "pointer" }}
+                  format="DD/MM/YYYY"
                   inputVariant="outlined"
                   inputValue={dateValue}
-                  // onError={console.log("error")}
+                  onError={console.log("error")}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment>
+                        <Event />
+                      </InputAdornment>
+                    ),
+                  }}
                   onChange={onDateChange}
-                  rifmFormatter={dateFormatter}
                 />
               </Grid>
             </MuiPickersUtilsProvider>
