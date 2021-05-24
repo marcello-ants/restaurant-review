@@ -4,6 +4,9 @@ const Review = new mongoose.Schema({
   user_id: {
     type: String,
   },
+  user_name: {
+    type: String,
+  },
   comment: {
     type: String,
   },
@@ -31,7 +34,7 @@ const Restaurant = new mongoose.Schema({
   rating: {
     type: Number,
   },
-  image_url: {
+  image: {
     type: String,
   },
   reviews: [Review],

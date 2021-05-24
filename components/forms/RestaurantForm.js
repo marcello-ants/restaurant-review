@@ -53,7 +53,7 @@ const RestaurantForm = ({
   // RESTAURANT PUT
   const putData = async (form) => {
     try {
-      const res = await fetch(`/api/restaurants/${restaurantForm.id}`, {
+      const res = await fetch(`/api/restaurants/${form.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -66,7 +66,7 @@ const RestaurantForm = ({
       }
 
       const { data } = await res.json();
-      mutate(`/api/restaurants/${restaurantForm.id}`, data, false);
+      mutate(`/api/restaurants/${form.id}`, data, false);
       onCompleted();
       return res;
     } catch (error) {
@@ -99,7 +99,7 @@ const RestaurantForm = ({
     let err = {};
     if (!form.name) err.name = "name is required";
     if (!form.owner_id) err.owner_id = "owner ID is required";
-    if (!form.image_url) err.image_url = "image is required";
+    if (!form.image) err.image = "image is required";
     return err;
   };
 
@@ -195,12 +195,12 @@ const RestaurantForm = ({
             )}
             <Grid item xs={12}>
               <TextField
-                error={errors && errors.image_url}
-                id="image_url"
-                name="image_url"
+                error={errors && errors.image}
+                id="image"
+                name="image"
                 label="image url"
-                value={form.image_url}
-                autoComplete="image_url"
+                value={form.image}
+                autoComplete="image"
                 type="url"
                 variant="outlined"
                 fullWidth

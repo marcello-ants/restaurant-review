@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   await dbConnect();
 
   switch (method) {
-    case "GET" /* Get a model by its ID */:
+    case "GET" /* Get a restaurant by its ID */:
       try {
         const restaurant = await Restaurant.findById(id);
         if (!restaurant) {
@@ -22,7 +22,7 @@ export default async function handler(req, res) {
       }
       break;
 
-    case "PUT" /* Edit a model by its ID */:
+    case "PUT" /* Edit a restaurant by its ID */:
       try {
         const restaurant = await Restaurant.findByIdAndUpdate(id, req.body, {
           new: true,
@@ -37,7 +37,7 @@ export default async function handler(req, res) {
       }
       break;
 
-    case "DELETE" /* Delete a model by its ID */:
+    case "DELETE" /* Delete a restaurant by its ID */:
       try {
         const deletedRestaurant = await Restaurant.deleteOne({ _id: id });
         if (!deletedRestaurant) {

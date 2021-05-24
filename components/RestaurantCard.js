@@ -19,10 +19,15 @@ import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    padding: "0 16px",
     // maxWidth: 200,
   },
+  flex: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
   button: {
-    height: 35,
+    padding: 5,
   },
   media: {
     paddingTop: "56.25%", // 16:9
@@ -101,6 +106,7 @@ const RestaurantCard = ({
     setReviewForm({
       id: review._id,
       rating: review.rating,
+      user_name: review.user_name,
       comment: review.comment,
       date: review.date,
       reply: review.reply,
@@ -114,6 +120,8 @@ const RestaurantCard = ({
     false
   );
 
+  console.log(reviews);
+
   const ordered = reviews.sort(function (a, b) {
     return b.rating - a.rating;
   });
@@ -121,8 +129,9 @@ const RestaurantCard = ({
   return (
     <Card className={classes.root}>
       <CardHeader
+        style={{ paddingLeft: 5 }}
         title={
-          <Typography component="h3" align="left" style={{ fontSize: 20 }}>
+          <Typography component="h2" align="left" style={{ fontSize: 20 }}>
             {name}
           </Typography>
         }
@@ -156,11 +165,13 @@ const RestaurantCard = ({
         }
       />
       <CardMedia className={classes.media} image={image} title={name} />
-      <CardActions disableSpacing>
+      <CardActions disableSpacing style={{ paddingLeft: 0 }}>
+        {/* CREATE REVIEW */}
         {isUser && (
           <IconButton
             aria-label="add-comment"
             disabled={isReviewed}
+            className={classes.button}
             onClick={() => {
               createReview();
             }}
@@ -168,19 +179,25 @@ const RestaurantCard = ({
             <AddCommentIcon fontSize="large" />
           </IconButton>
         )}
-        {/* DELETE RESTAURANT */}
         {isAdmin && (
-          <>
-            <IconButton aria-label="edit-restaurant" onClick={() => onEdit()}>
+          <div className={classes.flex} style={{ width: "100%" }}>
+            {/* EDIT RESTAURANT */}
+            <IconButton
+              aria-label="edit-restaurant"
+              className={classes.button}
+              onClick={() => onEdit()}
+            >
               <EditIcon fontSize="large" />
             </IconButton>
+            {/* DELETE RESTAURANT */}
             <IconButton
               aria-label="delete-restaurant"
+              className={classes.button}
               onClick={() => onDelete()}
             >
               <HighlightOffIcon color="secondary" fontSize="large" />
             </IconButton>
-          </>
+          </div>
         )}
       </CardActions>
       <Modal isOpen={isModalOpen} onModalClose={() => setIsModalOpen(false)}>
@@ -222,40 +239,72 @@ const RestaurantCard = ({
                 paddingTop: 0,
               }}
             >
-              {reviews.map((item, index) => (
+              {reviews.map((item) => (
                 <div
                   key={item._id}
                   item={item._id}
                   style={{ marginBottom: 25 }}
                 >
-                  {/* EDIT REVIEW */}
-                  {isAdmin && (
-                    <IconButton aria-label="edit-restaurant">
-                      <EditIcon
-                        fontSize="small"
-                        onClick={() => {
-                          editReview(item);
-                        }}
-                      />
-                    </IconButton>
-                  )}
-                  <ReactStars
-                    count={5}
-                    value={item.rating}
-                    a11y={false}
-                    edit={false}
-                    size={15}
-                    activeColor="#ffd700"
-                  />
-                  <Typography gutterBottom>{item.comment}</Typography>
-                  {item.reply && (
-                    <div>
-                      <Typography variant="subtitle2">
-                        Owner's reply:
-                      </Typography>
-                      <Typography as="p">{item.reply}</Typography>
-                    </div>
-                  )}
+                  {/* USER NAME */}
+                  <Typography style={{ fontWeight: "bold" }}>
+                    {item.user_name}
+                  </Typography>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginLeft: 3,
+                      marginBottom: 2,
+                    }}
+                  >
+                    {/* RATING */}
+                    <ReactStars
+                      count={5}
+                      value={item.rating}
+                      a11y={false}
+                      edit={false}
+                      size={18}
+                      activeColor="#ffd700"
+                    />
+                    {/* DATE */}
+                    <Typography
+                      as="span"
+                      color="textSecondary"
+                      style={{
+                        marginLeft: 10,
+                        fontSize: 14,
+                      }}
+                    >
+                      ({item.date})
+                    </Typography>
+                    {/* EDIT REVIEW */}
+                    {isAdmin && (
+                      <IconButton aria-label="edit-restaurant">
+                        <EditIcon
+                          fontSize="small"
+                          onClick={() => {
+                            editReview(item);
+                          }}
+                        />
+                      </IconButton>
+                    )}
+                  </div>
+                  {/* COMMENT */}
+                  <div style={{ marginLeft: 8 }}>
+                    <Typography style={{ marginBottom: 18 }}>
+                      {item.comment}
+                    </Typography>
+                    {item.reply && (
+                      <div>
+                        <Typography variant="subtitle2" color="textPrimary">
+                          Owner's reply:
+                        </Typography>
+                        <Typography as="p" color="textSecondary">
+                          {item.reply}
+                        </Typography>
+                      </div>
+                    )}
+                  </div>
                   {isOwner && !item.reply && (
                     <button
                       onClick={() => {

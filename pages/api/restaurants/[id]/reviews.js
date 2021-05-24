@@ -1,4 +1,5 @@
 import dbConnect from "../../../../utils/dbConnect";
+import User from "../../../../models/User";
 import Restaurant from "../../../../models/Restaurant";
 var mongoose = require("mongoose");
 
@@ -13,9 +14,14 @@ export default async function handler(req, res) {
   switch (method) {
     case "POST" /* Edit a review by its ID */:
       try {
-        const review = req.body;
+        const user = await User.findById(req.body.user_id);
+        const review = {
+          ...req.body,
+          user_name: user.name,
+        };
 
         const restaurant = await Restaurant.findById(id);
+
         restaurant.reviews.push(review);
 
         const reviewedRestaurant = await restaurant.save();

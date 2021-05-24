@@ -121,7 +121,7 @@ const Restaurants = ({ serverData }) => {
       name: "",
       rating: 0,
       owner_id: "",
-      image_url: "",
+      image: "",
       reviews: [],
     });
     setForNewRestaurant(true);
@@ -133,7 +133,7 @@ const Restaurants = ({ serverData }) => {
       id: item._id,
       name: item.name,
       owner_id: item.owner_id,
-      image_url: item.image_url,
+      image: item.image,
     });
     setForNewRestaurant(false);
     setIsModalOpen(true);
@@ -218,7 +218,7 @@ const Restaurants = ({ serverData }) => {
               alignItems: "center",
               justifyContent: "space-between",
               marginTop: 30,
-              marginBottom: 40,
+              marginBottom: 25,
             }}
           >
             <div
@@ -227,7 +227,7 @@ const Restaurants = ({ serverData }) => {
                 width: "100%",
                 alignItems: "center",
                 justifyContent: "space-between",
-                marginLeft: 30,
+                marginLeft: 15,
                 marginRight: 10,
               }}
             >
@@ -303,32 +303,30 @@ const Restaurants = ({ serverData }) => {
                         //   return null;
                         return (
                           <Grid key={item._id} item xs={12} sm={6} lg={4}>
-                            <Paper className={classes.paper}>
-                              <RestaurantCard
-                                restaurant={item}
-                                // createdAt={item.created_at}
-                                userId={user?.id}
-                                isAdmin={isAdmin}
-                                isOwner={isOwner}
-                                isUser={isUser}
-                                reviews={item.reviews}
-                                onCompleted={() => {
-                                  refreshData();
-                                }}
-                                onReview={() => {
-                                  createReview(item);
-                                }}
-                                onEditReview={(id, item) => {
-                                  editReview(id, item);
-                                }}
-                                onEdit={() => {
-                                  editRestaurant(item);
-                                }}
-                                onDelete={() => {
-                                  deleteRestaurant(item._id);
-                                }}
-                              />
-                            </Paper>
+                            <RestaurantCard
+                              restaurant={item}
+                              // createdAt={item.created_at}
+                              userId={user?.id}
+                              isAdmin={isAdmin}
+                              isOwner={isOwner}
+                              isUser={isUser}
+                              reviews={item.reviews}
+                              onCompleted={() => {
+                                refreshData();
+                              }}
+                              onReview={() => {
+                                createReview(item);
+                              }}
+                              onEditReview={(id, item) => {
+                                editReview(id, item);
+                              }}
+                              onEdit={() => {
+                                editRestaurant(item);
+                              }}
+                              onDelete={() => {
+                                deleteRestaurant(item._id);
+                              }}
+                            />
                           </Grid>
                         );
                       })}

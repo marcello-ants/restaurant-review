@@ -66,7 +66,7 @@ const ReviewForm = ({
   const [rating, setRating] = React.useState(forNewReview ? 0 : form.rating);
 
   // REVIEW POST
-  const postData = async (form) => {
+  const createReview = async (form) => {
     const postForm = {
       ...form,
       date: dateValue,
@@ -95,12 +95,13 @@ const ReviewForm = ({
   };
 
   // REVIEW PUT
-  const putData = async (form) => {
+  const editReview = async (form) => {
     const newReview = {
       id: form.id,
       rating: rating,
       reply: form.reply,
       comment: form.comment,
+      user_name: form.user_name,
       date: dateValue,
     };
 
@@ -159,7 +160,7 @@ const ReviewForm = ({
     const errs = formValidate();
 
     if (Object.keys(errs).length === 0) {
-      forNewReview ? postData(form) : putData(form);
+      forNewReview ? createReview(form) : editReview(form);
     } else {
       setErrors(errs);
     }
@@ -223,6 +224,8 @@ const ReviewForm = ({
                 id="comment"
                 name="comment"
                 label="comment"
+                multiline
+                rows={3}
                 value={form.comment}
                 disabled={isOwner}
                 autoComplete="comment"
@@ -232,7 +235,7 @@ const ReviewForm = ({
                 onChange={(e) => handleChange(e)}
               />
             </Grid>
-            {(isAdmin || isOwner) && (
+            {((isAdmin && form.reply) || isOwner) && (
               <Grid item xs={12}>
                 <TextField
                   error={errors && errors.reply}
