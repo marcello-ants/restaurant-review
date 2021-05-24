@@ -4,6 +4,10 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
 import PersonIcon from "@material-ui/icons/Person";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -32,7 +36,11 @@ const SignUpForm = ({ sendMutation }) => {
   const classes = useStyles();
   const [errors, setErrors] = React.useState({});
   const [errorMessage, setErrorMessage] = React.useState("");
-  const [form, setForm] = React.useState({ name: "", password: "" });
+  const [form, setForm] = React.useState({
+    name: "",
+    password: "",
+    role_owner: false,
+  });
 
   const signup = async (form) => {
     const res = await fetch("/api/signup", {
@@ -65,8 +73,9 @@ const SignUpForm = ({ sendMutation }) => {
   };
 
   const handleChange = (e) => {
-    const value = e.target.value;
+    const target = e.target;
     const name = e.target.name;
+    const value = name === "role_owner" ? target.checked : target.value;
 
     setForm({
       ...form,
@@ -128,6 +137,22 @@ const SignUpForm = ({ sendMutation }) => {
                 required
                 onChange={(e) => handleChange(e)}
               />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl component="fieldset">
+                <FormGroup aria-label="position" row>
+                  <FormControlLabel
+                    id="role_owner"
+                    name="role_owner"
+                    label="sign up as owner"
+                    labelPlacement="end"
+                    textSecondary
+                    style={{ color: "gray" }}
+                    control={<Checkbox color="primary" />}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </FormGroup>
+              </FormControl>
             </Grid>
           </Grid>
           <Button
