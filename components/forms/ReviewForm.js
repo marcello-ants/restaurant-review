@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useRouter } from "next/router";
 import { makeStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -39,23 +38,18 @@ const useStyles = makeStyles((theme) => ({
 
 const ReviewForm = ({
   reviewForm,
-  // owners,
   forNewReview = true,
   onCompleted,
   userId,
   restaurantId,
   isAdmin,
   isOwner,
-  isUser,
 }) => {
   const classes = useStyles();
-  const router = useRouter();
   const [errors, setErrors] = React.useState({});
   const [errorMessage, setErrorMessage] = React.useState("");
   const [form, setForm] = React.useState({
     ...reviewForm,
-    // ...(forNewReview && { created_at: new Date().toString() }),
-    // ...(forNewReview && { date: moment().format("DD-MM-YYYY") }),
   });
 
   const [selectedDate, setDate] = React.useState(moment());
@@ -84,8 +78,6 @@ const ReviewForm = ({
       if (!res.ok) {
         throw new Error(res.status);
       }
-      // const { data } = await res.json();
-      // mutate(`/api/restaurants/${form.id}`, data, false);
       onCompleted();
       return res;
     } catch (error) {
@@ -176,7 +168,7 @@ const ReviewForm = ({
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          {forNewReview ? "Create Review" : "Edit Review"}
+          {forNewReview ? "Add Review" : "Edit Review"}
         </Typography>
         <form
           id="restaurant-form"
@@ -186,18 +178,7 @@ const ReviewForm = ({
         >
           <Grid container spacing={2}>
             <Grid item xs={6}>
-              <ReactStars
-                count={5}
-                value={rating}
-                edit={!isOwner}
-                onChange={(newRating) => setRating(newRating)}
-                a11y={false}
-                size={24}
-                activeColor="#ffd700"
-              />
-            </Grid>
-            <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
-              <Grid item xs={6}>
+              <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
                 <DatePicker
                   autoOk={true}
                   showTodayButton={true}
@@ -225,8 +206,27 @@ const ReviewForm = ({
                   }}
                   onChange={onDateChange}
                 />
-              </Grid>
-            </MuiPickersUtilsProvider>
+              </MuiPickersUtilsProvider>
+            </Grid>
+            <Grid
+              item
+              xs={6}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <ReactStars
+                count={5}
+                value={rating}
+                edit={!isOwner}
+                onChange={(newRating) => setRating(newRating)}
+                a11y={false}
+                size={24}
+                activeColor="#ffd700"
+              />
+            </Grid>
             <Grid item xs={12}>
               <TextField
                 error={errors && errors.comment}
@@ -234,7 +234,7 @@ const ReviewForm = ({
                 name="comment"
                 label="comment"
                 multiline
-                rows={3}
+                rows={4}
                 value={form.comment}
                 disabled={isOwner}
                 autoComplete="comment"
@@ -266,9 +266,10 @@ const ReviewForm = ({
             color="primary"
             variant="contained"
             fullWidth
+            disabled={!rating}
             className={classes.submit}
           >
-            {forNewReview ? "Create" : "Edit"}
+            {forNewReview ? "Review" : "Edit"}
           </Button>
           <Typography>{errorMessage}</Typography>
         </form>

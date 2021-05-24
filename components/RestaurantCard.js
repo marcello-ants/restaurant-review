@@ -79,7 +79,6 @@ const RestaurantCard = ({
 }) => {
   const router = useRouter();
   const classes = useStyles();
-  const [errors, setErrors] = React.useState({});
   const [reviewForm, setReviewForm] = React.useState({});
   const [forNewReview, setForNewReview] = React.useState(false);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
@@ -97,7 +96,6 @@ const RestaurantCard = ({
       id: restaurantId,
       comment: "",
       reply: "",
-      rating: 0,
     });
     setForNewReview(true);
     setIsReviewModalOpen(true);
@@ -270,14 +268,16 @@ const RestaurantCard = ({
         isOpen={isReviewModalOpen}
         onModalClose={() => setIsReviewModalOpen(false)}
       >
-        <div className={classes.modalBody}>
+        <div
+          className={classes.modalBody}
+          style={{ maxWidth: forNewReview ? 500 : 900 }}
+        >
           <ReviewForm
             formId="add-review-form"
             reviewForm={reviewForm}
             userId={userId}
             restaurantId={restaurantId}
             forNewReview={forNewReview}
-            isUser={isUser}
             isOwner={isOwner}
             isAdmin={isAdmin}
             onCompleted={() => {

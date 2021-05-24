@@ -137,7 +137,7 @@ const LoginForm = ({ sendMutation }) => {
           >
             Login
           </Button>
-          <Typography>{errorMessage}</Typography>
+          <Typography color="error">{errorMessage}</Typography>
         </form>
       </div>
     </>

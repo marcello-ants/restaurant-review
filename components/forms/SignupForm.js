@@ -164,7 +164,7 @@ const SignUpForm = ({ sendMutation }) => {
           >
             Sign Up
           </Button>
-          <Typography>{errorMessage}</Typography>
+          <Typography color="error">{errorMessage}</Typography>
         </form>
       </div>
     </>

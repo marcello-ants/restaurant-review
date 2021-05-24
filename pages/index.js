@@ -79,8 +79,8 @@ const Home = () => {
       >
         <div
           style={{
-            width: 600,
-            height: 500,
+            width: 650,
+            height: 550,
             backgroundColor: "white",
             borderRadius: 12,
           }}
