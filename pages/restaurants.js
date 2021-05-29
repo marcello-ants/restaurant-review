@@ -326,14 +326,7 @@ const Restaurants = ({ serverData }) => {
                       )
                       .map((item) => {
                         return (
-                          <Grid
-                            key={item._id}
-                            item
-                            xs={12}
-                            sm={6}
-                            md={4}
-                            lg={4}
-                          >
+                          <Grid key={item._id} item xs={12} md={6} lg={4}>
                             <RestaurantCard
                               restaurant={item}
                               userId={user?.id}

@@ -210,6 +210,7 @@ const RestaurantCard = ({
             disabled={isReviewed}
             color="primary"
             startIcon={<AddCommentIcon size="large" />}
+            style={{ marginTop: 8 }}
             onClick={() => {
               createReview();
             }}

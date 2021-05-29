@@ -7,10 +7,11 @@ import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import TextField from "@material-ui/core/TextField";
 import ReactStars from "react-rating-stars-component";
-import InputAdornment from "@material-ui/core/InputAdornment";
 import Typography from "@material-ui/core/Typography";
-import Event from "@material-ui/icons/Event";
-import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
 import moment from "moment";
 
@@ -35,6 +36,10 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
   },
 }));
+
+const TextFieldComponent = (props) => {
+  return <TextField {...props} disabled={true} />;
+};
 
 const ReviewForm = ({
   reviewForm,
@@ -179,32 +184,23 @@ const ReviewForm = ({
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
-                <DatePicker
+                <KeyboardDatePicker
                   autoOk={true}
                   showTodayButton={true}
-                  variant="inline"
-                  clearable
                   value={selectedDate}
-                  placeholder="10/10/2018"
+                  maxDate={new Date()}
+                  format="DD/MM/YYYY"
                   disabled={isOwner}
                   disableFuture={true}
-                  maxDate={new Date()}
                   fullWidth
-                  required
                   label="date visited"
-                  rifmFormatter={dateFormatter}
-                  style={{ cursor: "pointer" }}
-                  format="DD/MM/YYYY"
+                  variant="inline"
+                  required
                   inputVariant="outlined"
                   inputValue={dateValue}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment>
-                        <Event />
-                      </InputAdornment>
-                    ),
-                  }}
                   onChange={onDateChange}
+                  TextFieldComponent={TextFieldComponent}
+                  rifmFormatter={dateFormatter}
                 />
               </MuiPickersUtilsProvider>
             </Grid>
